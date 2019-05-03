@@ -104,12 +104,16 @@ theme: next
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
-  # ÎÒÃÇÊÇÊ¹ÓÃ git À´²¿ÊðµÄ¡£
- - type: git
-  # git ²Ö¿âµÄµØÖ·¡£
-   repo: git@github.com:WA-automaton/WA-automaton.github.io.git
-  # ·ÖÖ§Ãû³Æ¡£
-   branch: master
+  - type: git
+    repo: git@github.com:WA-automaton/WA-automaton.github.io.git
+    branch: master
+  - type: git
+    repo: git@github.com:WA-automaton/WA-automaton.github.io.git
+    branch: src
+    extend_dirs: /
+    ignore_hidden: false
+    ignore_pattern:
+        public: .
 # - type: baidu_url_submitter
 # hexo-tag-cloud
 #tag_cloud:
