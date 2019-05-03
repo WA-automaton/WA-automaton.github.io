@@ -1,0 +1,18 @@
+{
+  "name": "KUTORI",
+  "id": "KUTORI",
+  "encrypt": "false",
+  "version": "1.0",
+  "list": [
+    {
+      "id": "kutori",
+      "character": "kutori",
+      "costume": [
+        {
+          "name": "kutori",
+          "path": "kutori/kutori.model.json"
+        }
+      ]
+    }
+  ]
+}

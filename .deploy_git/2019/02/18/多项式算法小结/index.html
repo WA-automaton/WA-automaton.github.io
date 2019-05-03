@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="xah9s00UW0">
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="多项式求逆 给定一个多项式 $F(x)$ ，请求出一个多项式$G(x)$， 满足 $F(x) * G(x) \equiv 1 ( \mathrm{mod\:} x^n )$。系数对$998244353$取模。">
+<meta name="keywords" content="多项式算法,数论">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多项式算法小结">
+<meta property="og:url" content="https://wa-automaton.github.io/2019/02/18/多项式算法小结/index.html">
+<meta property="og:site_name" content="_WA自动机的blog">
+<meta property="og:description" content="多项式求逆 给定一个多项式 $F(x)$ ，请求出一个多项式$G(x)$， 满足 $F(x) * G(x) \equiv 1 ( \mathrm{mod\:} x^n )$。系数对$998244353$取模。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://wa-automaton.github.io/2019/02/18/多项式算法小结/LCHAK.jpg">
+<meta property="og:updated_time" content="2019-02-24T15:03:21.016Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="多项式算法小结">
+<meta name="twitter:description" content="多项式求逆 给定一个多项式 $F(x)$ ，请求出一个多项式$G(x)$， 满足 $F(x) * G(x) \equiv 1 ( \mathrm{mod\:} x^n )$。系数对$998244353$取模。">
+<meta name="twitter:image" content="https://wa-automaton.github.io/2019/02/18/多项式算法小结/LCHAK.jpg">
+
+
+
+
+
+
+  <link rel="canonical" href="https://wa-automaton.github.io/2019/02/18/多项式算法小结/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>多项式算法小结 | _WA自动机的blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">_WA自动机的blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">HA省蒟蒻OIer</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-links">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/links/" rel="section"><i class="menu-item-icon fa fa-fw fa-link"></i> <br>links</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wa-automaton.github.io/2019/02/18/多项式算法小结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="_WA自动机">
+      <meta itemprop="description" content="消えない过去、消えていく未来。">
+      <meta itemprop="image" content="/images/CNS.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="_WA自动机的blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">多项式算法小结
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-02-18 22:22:06" itemprop="dateCreated datePublished" datetime="2019-02-18T22:22:06+08:00">2019-02-18</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-02-24 23:03:21" itemprop="dateModified" datetime="2019-02-24T23:03:21+08:00">2019-02-24</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/学习笔记/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="LCHAK.jpg" alt="万古神犇卢宸昊，数论算法碾众生！"></p>
+<h1 id="多项式求逆"><a href="#多项式求逆" class="headerlink" title="多项式求逆"></a>多项式求逆</h1><blockquote>
+<p>给定一个多项式 $F(x)$ ，请求出一个多项式$G(x)$， 满足 $F(x) * G(x) \equiv 1 ( \mathrm{mod\:} x^n )$。系数对$998244353$取模。</p>
+</blockquote>
+<a id="more"></a>
+<p>考虑边界情况：当$F(x)$只有常数项的时候，其逆元显然为常数项的逆元。<br>我们递归处理这个问题：<br>现在假设我们已知一个多项式$G’(x)$,满足：<br>$$F(x)<em>G’(x)\equiv 1 (\mathrm{mod\:} \ x^{\lceil \frac{n}{2} \rceil})$$<br>要求的$G(x)$满足：<br>$$F(x)</em> G(x)\equiv 1 (\mathrm{mod\:} \ x^{\lceil \frac{n}{2} \rceil})$$<br>两式相减得：<br>$$F(x)<em>[G(x)-G’(x)]\equiv 0(\mathrm{mod\:} \ x^{\lceil \frac{n}{2} \rceil})$$<br>则可得：<br>$$G(x)-G’(x)\equiv 0(\mathrm{mod\:}\ x^{\lceil \frac{n}{2} \rceil})$$<br>两边同时平方得：<br>$$G^2(x)-2G(x)</em>G’(x)+G’^2(x)\equiv 0 (\mathrm{mod\:}\ x^n)$$<br>上式乘上$F(x)$:<br>$$G(x)-2G’(x)+F(x)<em>G’^2(x)\equiv 0 (\mathrm{mod\:}\ x^n)$$<br>移项得：<br>$$G(x)\equiv 2G’(x)-F(x)</em>G’^2(x) (\mathrm{mod\:}\ x^n)$$<br>所以我们珂以从下一层的答案推到这一层来。时间复杂度满足递归式:<br>$$T(n)=T(\frac{n}{2})+O(n \log n)$$<br>解得$T(n)=O(n \log n)$,与FFT复杂度相同。  </p>
+<h2 id="代码："><a href="#代码：" class="headerlink" title="代码："></a>代码：</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">prework</span><span class="params">(<span class="keyword">int</span> limit)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;limit;++i)</span><br><span class="line">        rev[i]=(rev[i&gt;&gt;<span class="number">1</span>]&gt;&gt;<span class="number">1</span>)|((i&amp;<span class="number">1</span>)&lt;&lt;(l<span class="number">-1</span>));</span><br><span class="line">    w[<span class="number">0</span>]=winv[<span class="number">0</span>]=<span class="number">1</span>;w[<span class="number">1</span>]=qpow(g,(p<span class="number">-1</span>)/limit,p);winv[<span class="number">1</span>]=qpow(w[<span class="number">1</span>],p<span class="number">-2</span>,p);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">2</span>;i&lt;limit;++i)</span><br><span class="line">        w[i]=(ll)w[i<span class="number">-1</span>]*w[<span class="number">1</span>]%p,winv[i]=(ll)winv[i<span class="number">-1</span>]*winv[<span class="number">1</span>]%p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">polyinv</span><span class="params">(<span class="keyword">int</span> *A,<span class="keyword">int</span> *B,<span class="keyword">int</span> deg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">int</span> C[maxn];</span><br><span class="line">    <span class="keyword">if</span> (deg==<span class="number">1</span>) &#123;B[<span class="number">0</span>]=qpow(A[<span class="number">0</span>],p<span class="number">-2</span>,p);<span class="keyword">return</span>;&#125;</span><br><span class="line">    polyinv(A,B,(deg+<span class="number">1</span>)&gt;&gt;<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">int</span> l=<span class="number">0</span>;limit=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (limit&lt;(deg&lt;&lt;<span class="number">1</span>)) limit&lt;&lt;=<span class="number">1</span>,++l;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;deg;++i) C[i]=A[i];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=deg;i&lt;limit;++i) C[i]=<span class="number">0</span>;</span><br><span class="line">    prework(limit);</span><br><span class="line">    DFT(C);DFT(B);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;limit;++i)</span><br><span class="line">        B[i]=((ll)B[i]*((<span class="number">2</span>-(ll)C[i]*B[i]%p+p)%p))%p;</span><br><span class="line">    IDFT(B);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=deg;i&lt;limit;++i) B[i]=<span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="分治FFT"><a href="#分治FFT" class="headerlink" title="分治FFT"></a>分治FFT</h1><p>生成函数真的是人类智慧。。。  </p>
+<blockquote>
+<p>给定长度为 $n-1$ 的数组 $g[1],g[2],..,g[n-1]g[1],g[2],..,g[n−1]$，求 $f[0],f[1],..,f[n-1]f[0],f[1],..,f[n−1]$，其中<br>$$f[i]=\sum_{j=1}^i f[i-j]g[j]$$<br>边界为 $f[0]=1$。答案模$998244353$。</p>
+</blockquote>
+<p>考虑生成函数(不妨设$g[0]=0$)：<br>$$F(x)=\sum_{i=0}^{\infty} f[i]<em>x^i$$<br>$$G(x)=\sum_{i=0}^{\infty} g[i]</em>x^i$$<br>则我们只要求出来$F(x)$这个多项式就珂以确定$f[]$的值了。<br>由定义：<br>$$(F<em>G)=\sum_{i=0}^{\infty}[(\sum_{j=0}^i f[j]</em>g[i-j])<em>x^i]$$<br>分类讨论：<br>当$i=0$时，<br>$$(F</em>G)(0)=0$$<br>当i&gt;0时，因为<br>$$f[i]=\sum_{j=1}^i f[i-j]g[j]$$<br>所以<br>$$\sum_{j=0}^i f[j]<em>g[i-j]=f[i]$$<br>即得：<br>$$(F</em>G)(i)=f[i]$$<br>故，<br>$$F(x)*G(x)=F(x)-f[0]=F(x)-1$$<br>解得：<br>$$F(x)=\frac{1}{1-G(x)}$$<br>然后套多项式求逆板子就好了。</p>
+<h2 id="代码：（只贴主函数吧）"><a href="#代码：（只贴主函数吧）" class="headerlink" title="代码：（只贴主函数吧）"></a>代码：（只贴主函数吧）</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;n;++i)</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%d"</span>,A+i),A[i]=p-A[i];</span><br><span class="line">    A[<span class="number">0</span>]=<span class="number">1</span>;</span><br><span class="line">    polyinv(A,B,n);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;++i)</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%d "</span>,B[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="多项式对数函数"><a href="#多项式对数函数" class="headerlink" title="多项式对数函数"></a>多项式对数函数</h1><blockquote>
+<p>给出 $n-1$ 次多项式 $A(x)$,求一个 $\bmod{\:x^n}$下的多项式 $B(x)$，满足 $B(x) \equiv \ln A(x)$.在 $\text{mod } 998244353$mod 998244353 下进行，且 $a_i \in [0, 998244353) \cap \mathbb{Z}$</p>
+</blockquote>
+<p>对于一个函数$F(x)=\sum kx^a$而言：<br>$$F’(x)=\sum kax^{a-1}$$<br>同理，对于它的导函数而言，<br>$$\int F’(x)dx=F(x)$$<br>即对于$F(x)=\sum kx^a$，<br>$$\int F(x)dx=(\sum \frac{k}{a+1}x^{a+1})+C\ (C\in \mathbb{R})$$<br><strong>在下文中，一般把C视为0.</strong>  把B’视为关于x的复合函数，<br>$$\because B(x)=\ln A(x)$$<br>$$\therefore B’(x)=A’(x)/A(x)$$<br>再做一次积分，得：<br>$$B(x)=\int \frac{A’(x)}{A(x)}$$<br>因为求导和积分我们都可以$O(n)$完成，所以总复杂度$O(n \log n)$.</p>
+<h2 id="代码：-1"><a href="#代码：-1" class="headerlink" title="代码："></a>代码：</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">polyder</span><span class="params">(<span class="keyword">int</span> *A,<span class="keyword">int</span> *B,<span class="keyword">int</span> deg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;deg;++i)</span><br><span class="line">        B[i<span class="number">-1</span>]=(ll)A[i]*i%P;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">polyint</span><span class="params">(<span class="keyword">int</span> *A,<span class="keyword">int</span> *B,<span class="keyword">int</span> deg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    B[<span class="number">0</span>]=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=deg;++i)</span><br><span class="line">        B[i]=A[i<span class="number">-1</span>]*(ll)qpow(i,P<span class="number">-2</span>,P)%P;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">polyln</span><span class="params">(<span class="keyword">int</span> *A,<span class="keyword">int</span> *E,<span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">int</span> B[maxn],C[maxn];</span><br><span class="line">    <span class="built_in">memset</span>(B,<span class="number">0</span>,<span class="keyword">sizeof</span>(B));</span><br><span class="line">    <span class="built_in">memset</span>(C,<span class="number">0</span>,<span class="keyword">sizeof</span>(C));</span><br><span class="line">    polyder(A,C,n);</span><br><span class="line">    polyinv(A,B,n);</span><br><span class="line">    <span class="keyword">int</span> limit=<span class="number">1</span>,l=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (limit&lt;=(n&lt;&lt;<span class="number">1</span>)) limit&lt;&lt;=<span class="number">1</span>,++l;</span><br><span class="line">    prework(limit,l);</span><br><span class="line">    NTT(C,w,limit);NTT(B,w,limit);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;limit;++i)</span><br><span class="line">        C[i]=(ll)C[i]*B[i]%P;</span><br><span class="line">    NTT(C,winv,limit);</span><br><span class="line">    <span class="keyword">int</span> inv=qpow(limit,P<span class="number">-2</span>,P);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;limit;++i)</span><br><span class="line">        C[i]=(ll)C[i]*inv%P;</span><br><span class="line">    polyint(C,E,n);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="多项式指数函数"><a href="#多项式指数函数" class="headerlink" title="多项式指数函数"></a>多项式指数函数</h1><blockquote>
+<p>给出 $n-1$次多项式 $A(x)$，求一个 $\bmod{\:x^n}$下的多项式 $B(x)$，满足 $B(x) \equiv e^{A(x)}$.  </p>
+</blockquote>
+<p>这就比较麻烦。。。<br>我们考虑两边同时取对数：<br>$$\ln B(x)\equiv A(x) (\bmod\  x^n)$$<br>移项：<br>$$\ln B(x)-A(x)\equiv 0\ (\mathrm{mod\ } x^n)$$<br>设$G(B(x))=\ln B(x)-A(x)$<br>则要求的$B(x)$就是$G(B(x))$的零点。<br>假设我们已经求得$B_0(x)$,使得<br>$$G(B_0(x))\equiv 0 (\bmod \ x^{\lceil \frac{n}{2}\rceil})$$<br>考虑在$B_0(x)$处泰勒展开：<br>$$G(B(x))=\frac{G(B_0(x))}{0!}+\frac{G’(B_0(x))}{1!}(B(x)-B_0(x)) \ (<em>)$$<br>为什么后面不再写了呢，是因为:<br>$$\because G(B_0(x))\equiv 0 (\bmod \ x^{\lceil \frac{n}{2}\rceil}),G(B(x))\equiv 0 (\bmod \ x^{\lceil \frac{n}{2}\rceil})$$<br>$$\therefore B_0(x)\equiv B(x)\ (\bmod \ x^{\lceil \frac{n}{2}\rceil})$$<br>即$B_0(x)$和$B(x)$在$x^{\lceil \frac{n}{2}\rceil}$之前都是相同的。<br>所以$(B(x)-B_0(x))^2$最低次的非零项次数也大于$n$.在膜意义下，后面的项就都为0了qwq。<br>由$G(B(x))\equiv 0 \ (\bmod x^n)$,对$(</em>)$式整理可得：<br>$$B(x)\equiv B_0(x)-\frac{G(B_0(x)}{G’(B_0(x))}$$<br>即：<br>$$B(x)\equiv B_0(x)*(1-\ln B_0(x)+A(x)) \ (\bmod x^n)$$<br>套多项式ln板子即可。</p>
+<h2 id="代码：-2"><a href="#代码：-2" class="headerlink" title="代码："></a>代码：</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">polyexp</span><span class="params">(<span class="keyword">int</span> *A,<span class="keyword">int</span> *B,<span class="keyword">int</span> deg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (deg==<span class="number">1</span>) &#123;B[<span class="number">0</span>]=<span class="number">1</span>;<span class="keyword">return</span>;&#125;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">int</span> T[maxn];</span><br><span class="line">    polyexp(A,B,(deg+<span class="number">1</span>)&gt;&gt;<span class="number">1</span>);</span><br><span class="line">    polyln(B,T,deg);</span><br><span class="line">    T[<span class="number">0</span>]=(T[<span class="number">0</span>]<span class="number">-1</span>+P)%P;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;deg;++i) T[i]=A[i]-T[i];</span><br><span class="line">    <span class="keyword">int</span> limit=<span class="number">1</span>,l=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (limit&lt;(deg&lt;&lt;<span class="number">1</span>)) limit&lt;&lt;=<span class="number">1</span>,++l;</span><br><span class="line">    prework(limit,l);</span><br><span class="line">    NTT(T,w,limit);NTT(B,w,limit);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;limit;++i)</span><br><span class="line">        B[i]=(ll)B[i]*T[i]%P;</span><br><span class="line">    NTT(B,winv,limit);</span><br><span class="line">    <span class="keyword">int</span> inv=qpow(limit,P<span class="number">-2</span>,P);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;deg;++i)</span><br><span class="line">        B[i]=(ll)B[i]*inv%P;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=deg;i&lt;limit;++i) B[i]=<span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="MTT（任意模数NTT）"><a href="#MTT（任意模数NTT）" class="headerlink" title="MTT（任意模数NTT）"></a>MTT（任意模数NTT）</h1><blockquote>
+<p>给定 $2$ 个多项式 $F(x), G(x)$ ，请求出 $F(x) * G(x)$。系数对 $p$ 取模，且不保证 $p$ 可以分解成 $p = a \cdot 2^k + 1$之形式。<br>$1\le n \le 10^5\ ;a_i,b_i\le 10^9;p\le 10^9+9$</p>
+</blockquote>
+<p>计数题膜数是$998244353$当然好，但就是有毒瘤出题人喜欢$998244853$,$99824453$和$10^9+7$。。。这样就比较麻烦。所以我们有了任意模数NTT这种操作，它有两种实现形式：三模数NTT和MTT。本文讲解MTT.（$\texttt{Matthew99 Theorem Transform}$)<br>首先，如果没有精度问题的话，FFT是可以直接做的。但是数太大啦，FFT会爆精度。所以我们把多项式每一个系数拆成A*m+b的形式，m取$\sqrt P$,一般实现时取$32768$，这样A.B就都在int范围之内，乘积就不会超出double的精度范围,把他们分别DFT，计算，再IDFT，就可以认为没有精度误差。就像这样做：<br>$$(am+b)(cm+d)=acm^2+(ad+bc)m+bd$$<br>这样做八次FFT，合并就可以了  </p>
+<h2 id="伪-cdot-代码"><a href="#伪-cdot-代码" class="headerlink" title="伪$\cdot$代码"></a>伪$\cdot$代码</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;complex&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">double</span> Pi=<span class="built_in">acos</span>(<span class="number">-1</span>);</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N=<span class="number">400100</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M=<span class="number">30000</span>;</span><br><span class="line"><span class="keyword">int</span> n,m,p,F[N],G[N];</span><br><span class="line"><span class="keyword">int</span> r[N],Ans[N],l,tt;</span><br><span class="line"><span class="keyword">complex</span>&lt;<span class="keyword">double</span>&gt; A1[N],B1[N],A2[N],B2[N],A[N],w[N];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FFT</span><span class="params">(<span class="keyword">complex</span>&lt;<span class="keyword">double</span>&gt; *P,<span class="keyword">int</span> op)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;l;i++) <span class="keyword">if</span>(r[i]&lt;i) swap(P[i],P[r[i]]);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;l;i&lt;&lt;=<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> p=i&lt;&lt;<span class="number">1</span>,j=<span class="number">0</span>;j&lt;l;j+=p)</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> k=<span class="number">0</span>;k&lt;i;k++)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">complex</span>&lt;<span class="keyword">double</span>&gt; W=w[l/i*k];W.imag()*=op;</span><br><span class="line">                <span class="keyword">complex</span>&lt;<span class="keyword">double</span>&gt; X=P[j+k],Y=W*P[j+k+i];</span><br><span class="line">                P[j+k]=X+Y;P[j+k+i]=X-Y;</span><br><span class="line">            &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Work</span><span class="params">(<span class="keyword">complex</span>&lt;<span class="keyword">double</span>&gt; *P1,<span class="keyword">complex</span>&lt;<span class="keyword">double</span>&gt; *P2,<span class="keyword">int</span> base)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;l;i++) A[i]=P1[i]*P2[i];FFT(A,<span class="number">-1</span>);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;=m+n;i++) (Ans[i]+=(<span class="keyword">long</span> <span class="keyword">long</span>)(A[i].real()/l+<span class="number">0.5</span>)%p*base%p)%=p;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d%d%d"</span>,&amp;n,&amp;m,&amp;p);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>,x;i&lt;=n;i++) <span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;x),A1[i].real()=x/M,B1[i].real()=x%M;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>,x;i&lt;=m;i++) <span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;x),A2[i].real()=x/M,B2[i].real()=x%M;</span><br><span class="line">    <span class="keyword">for</span>(l=<span class="number">1</span>;l&lt;=n+m;l&lt;&lt;=<span class="number">1</span>) tt++;tt--;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;l;i++) r[i]=(r[i&gt;&gt;<span class="number">1</span>]&gt;&gt;<span class="number">1</span>)|((i&amp;<span class="number">1</span>)&lt;&lt;tt);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;l;i++) w[i].real()=<span class="built_in">cos</span>(Pi/l*i),w[i].imag()=<span class="built_in">sin</span>(Pi/l*i);</span><br><span class="line">    FFT(A1,<span class="number">1</span>);FFT(A2,<span class="number">1</span>);FFT(B1,<span class="number">1</span>);FFT(B2,<span class="number">1</span>);</span><br><span class="line">    Work(A1,A2,M*M%p); Work(A1,B2,M%p);</span><br><span class="line">    Work(A2,B1,M%p); Work(B1,B2,<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;=m+n;i++) <span class="built_in">printf</span>(<span class="string">"%d "</span>,Ans[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>。。。吗？<br>八次FFT是不是有点慢呐qwq..<br>所以毛爷爷提出了一个优化方案，可以用四次FFT实现这个功能！</p>
+<h2 id="前置知识：一次DFT实现将两个多项式在点值和系数表达之间转换（Orz-myy"><a href="#前置知识：一次DFT实现将两个多项式在点值和系数表达之间转换（Orz-myy" class="headerlink" title="前置知识：一次DFT实现将两个多项式在点值和系数表达之间转换（Orz myy"></a>前置知识：一次DFT实现将两个多项式在点值和系数表达之间转换（Orz myy</h2><p>这部分可以去看毛爷爷论文,在<a href="国家集训队2016论文集.pdf">2016国家集训队论文集</a>中<br>加上myy优化的真$\cdot$MTT效果拔群，实测比Vectory巨佬的三模NTT快了十倍多….而且还不用解同余方程！但这样对精度要求还是比较高的，所以必须预处理单位复根，或者偷懒用long double.建议预处理一下吧，这样精度高还跑得快</p>
+<p><del>如果实在理解不了，MTT的代码有很强的规律性，所以可以直接背</del></p>
+<h2 id="真-cdot-代码："><a href="#真-cdot-代码：" class="headerlink" title="真$\cdot$代码："></a>真$\cdot$代码：</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">DFT</span><span class="params">(Complex *A,Complex *w,<span class="keyword">int</span> limit)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;limit;++i)</span><br><span class="line">        <span class="keyword">if</span> (i&lt;rev[i]) <span class="built_in">std</span>::swap(A[i],A[rev[i]]);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> mid=<span class="number">1</span>;mid&lt;limit;mid&lt;&lt;=<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> R=mid&lt;&lt;<span class="number">1</span>,j=<span class="number">0</span>;j&lt;limit;j+=R)</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k=<span class="number">0</span>;k&lt;mid;++k)</span><br><span class="line">            &#123;</span><br><span class="line">                Complex x=A[j+k],y=w[limit/<span class="number">2</span>/mid*k]*A[j+mid+k];</span><br><span class="line">                A[j+k]=x+y;</span><br><span class="line">                A[j+mid+k]=x-y;</span><br><span class="line">            &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">MTT</span><span class="params">(<span class="keyword">int</span>* F,<span class="keyword">int</span>* G,<span class="keyword">int</span> deg)</span><span class="comment">//求F*G,答案保存在ans[]里。</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">static</span> Complex A[maxn],B[maxn],C[maxn],D[maxn];</span><br><span class="line">    <span class="keyword">int</span> limit=<span class="number">1</span>,l=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (limit&lt;=(deg)) limit&lt;&lt;=<span class="number">1</span>,++l;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;=deg;++i)</span><br><span class="line">        A[i]=Complex(F[i]&amp;<span class="number">32767</span>,F[i]&gt;&gt;<span class="number">15</span>),B[i]=Complex(G[i]&amp;<span class="number">32767</span>,G[i]&gt;&gt;<span class="number">15</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;limit;++i)</span><br><span class="line">    &#123;</span><br><span class="line">        w[i]=Complex(<span class="built_in">std</span>::<span class="built_in">cos</span>(i*Pi*<span class="number">2</span>/limit),<span class="built_in">std</span>::<span class="built_in">sin</span>(i*Pi*<span class="number">2</span>/limit)),winv[i]=w[i].conj();</span><br><span class="line">        rev[i]=(rev[i&gt;&gt;<span class="number">1</span>]&gt;&gt;<span class="number">1</span>)|((i&amp;<span class="number">1</span>)&lt;&lt;(l<span class="number">-1</span>));</span><br><span class="line">    &#125;</span><br><span class="line">    DFT(A,w,limit);DFT(B,w,limit);</span><br><span class="line">    Complex da,db,dc,dd;</span><br><span class="line">    <span class="keyword">static</span> Complex DFTA[maxn],DFTB[maxn],DFTC[maxn],DFTD[maxn];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>,j;i&lt;limit;++i)</span><br><span class="line">    &#123;</span><br><span class="line">        j=(limit-i)&amp;(limit<span class="number">-1</span>);</span><br><span class="line">        da=(A[i]+A[j].conj())*Complex(<span class="number">0.5</span>,<span class="number">0</span>);</span><br><span class="line">        db=(A[i]-A[j].conj())*Complex(<span class="number">0</span>,<span class="number">-0.5</span>);</span><br><span class="line">        dc=(B[i]+B[j].conj())*Complex(<span class="number">0.5</span>,<span class="number">0</span>);</span><br><span class="line">        dd=(B[i]-B[j].conj())*Complex(<span class="number">0</span>,<span class="number">-0.5</span>);</span><br><span class="line">        DFTA[i]=da*dc;</span><br><span class="line">        DFTB[i]=da*dd;</span><br><span class="line">        DFTC[i]=db*dc;</span><br><span class="line">        DFTD[i]=db*dd;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;limit;++i)</span><br><span class="line">        A[i]=DFTA[i]+DFTB[i]*Complex(<span class="number">0</span>,<span class="number">1</span>),B[i]=DFTC[i]+DFTD[i]*Complex(<span class="number">0</span>,<span class="number">1</span>);</span><br><span class="line">    DFT(A,winv,limit);DFT(B,winv,limit);</span><br><span class="line">    ll a,b,c,d;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;=deg;++i)</span><br><span class="line">    &#123;</span><br><span class="line">        a=(ll)(A[i].real/limit+<span class="number">0.5</span>)%P;</span><br><span class="line">        b=(ll)(A[i].imag/limit+<span class="number">0.5</span>)%P;</span><br><span class="line">        c=(ll)(B[i].real/limit+<span class="number">0.5</span>)%P;</span><br><span class="line">        d=(ll)(B[i].imag/limit+<span class="number">0.5</span>)%P;</span><br><span class="line">        ans[i]=(((d&lt;&lt;<span class="number">30</span>)+((b+c)&lt;&lt;<span class="number">15</span>)+a)%P+P)%P;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/多项式算法/" rel="tag"># 多项式算法</a>
+          
+            <a href="/tags/数论/" rel="tag"># 数论</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/15/多项式算法做题记录/" rel="next" title="多项式算法做题记录">
+                <i class="fa fa-chevron-left"></i> 多项式算法做题记录
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/03/BZOJ1001/" rel="prev" title="[BZOJ1001][BeiJing2006]狼抓兔子">
+                [BZOJ1001][BeiJing2006]狼抓兔子 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="gitalk-container">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/CNS.jpg" alt="_WA自动机">
+            
+              <p class="site-author-name" itemprop="name">_WA自动机</p>
+              <p class="site-description motion-element" itemprop="description">消えない过去、消えていく未来。</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">24</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">36</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#多项式求逆"><span class="nav-number">1.</span> <span class="nav-text">多项式求逆</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#代码："><span class="nav-number">1.1.</span> <span class="nav-text">代码：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分治FFT"><span class="nav-number">2.</span> <span class="nav-text">分治FFT</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#代码：（只贴主函数吧）"><span class="nav-number">2.1.</span> <span class="nav-text">代码：（只贴主函数吧）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#多项式对数函数"><span class="nav-number">3.</span> <span class="nav-text">多项式对数函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#代码：-1"><span class="nav-number">3.1.</span> <span class="nav-text">代码：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#多项式指数函数"><span class="nav-number">4.</span> <span class="nav-text">多项式指数函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#代码：-2"><span class="nav-number">4.1.</span> <span class="nav-text">代码：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MTT（任意模数NTT）"><span class="nav-number">5.</span> <span class="nav-text">MTT（任意模数NTT）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#伪-cdot-代码"><span class="nav-number">5.1.</span> <span class="nav-text">伪$\cdot$代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前置知识：一次DFT实现将两个多项式在点值和系数表达之间转换（Orz-myy"><span class="nav-number">5.2.</span> <span class="nav-text">前置知识：一次DFT实现将两个多项式在点值和系数表达之间转换（Orz myy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#真-cdot-代码："><span class="nav-number">5.3.</span> <span class="nav-text">真$\cdot$代码：</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">_WA自动机</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v6.7.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.7.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.7.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  
+    
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+
+
+<script src="//cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js"></script>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: 'aed4f9ef9512db77c2b7',
+    clientSecret: 'c13990ab899c56ed5678d051d1f4cc71b4af4d7f',
+    repo: 'wa-automaton.github.io',
+    owner: 'WA-automaton',
+    admin: ['WA-automaton'],
+    id: md5(location.pathname),
+    distractionFreeMode: 'true'
+  });
+  gitalk.render('gitalk-container');
+</script>
+
+  
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      }
+      else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+  
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      
+      equationNumbers: {
+        autoNumber: "AMS"
+      }
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+      for (i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+<style>
+.MathJax_Display {
+  overflow: auto hidden;
+}
+</style>
+
+    
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  <style>
+    .copy-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: #333;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+      user-select: none;
+      outline: 0;
+    }
+
+    .highlight-wrap .copy-btn {
+      transition: opacity .3s ease-in-out;
+      opacity: 0;
+      padding: 2px 6px;
+      position: absolute;
+      right: 4px;
+      top: 8px;
+    }
+
+    .highlight-wrap:hover .copy-btn,
+    .highlight-wrap .copy-btn:focus {
+      opacity: 1
+    }
+
+    .highlight-wrap {
+      position: relative;
+    }
+  </style>
+  <script>
+    $('.highlight').each(function(i, e) {
+      var $wrap = $('<div>').addClass('highlight-wrap');
+      $(e).after($wrap);
+      $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+        var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+          return $(e).text();
+        }).toArray().join('\n');
+        var ta = document.createElement('textarea');
+        var range = document.createRange(); //For Chrome
+        var sel = window.getSelection(); //For Chrome
+        var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+        ta.style.top = yPosition + 'px'; //Prevent page scroll
+        ta.style.position = 'absolute';
+        ta.style.opacity = '0';
+        ta.value = code;
+        ta.textContent = code; //For FireFox
+        ta.contentEditable = true;
+        ta.readOnly = false;
+        document.body.appendChild(ta);
+        range.selectNode(ta);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        ta.setSelectionRange(0, code.length);
+        var result = document.execCommand('copy');
+        
+          if (result) $(this).text('复制成功');
+          else $(this).text('复制失败');
+        
+        ta.blur(); //For iOS
+        $(this).blur();
+      })).on('mouseleave', function(e) {
+        var $b = $(this).find('.copy-btn');
+        setTimeout(function() {
+          $b.text('复制');
+        }, 300);
+      }).append(e);
+    })
+  </script>
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/kutori/kutori.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacityDefault":1,"opacityOnHover":0.7},"log":false});</script></body>
+</html>

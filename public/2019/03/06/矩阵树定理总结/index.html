@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="xah9s00UW0">
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="高斯消元引入高斯消元听起来非常高大上，其实就是我们初中学的加减消元、代入消元法的程序化实现罢了。考虑一个方程组$$\begin{cases}A_{1,1} x_1+A_{1,2} x_2+A_{1,3} x_3+…+A_{1,n} x_n=C_1 \\A_{2,1} x_1+A_{2,2} x_2+A_{2,3} x_3+…+A_{2,n} x_n=C_2 \\…\\A_{k,1} x_1+A_{">
+<meta name="keywords" content="数学,矩阵树定理,计数,线性代数,高斯消元">
+<meta property="og:type" content="article">
+<meta property="og:title" content="高斯消元-行列式-矩阵树定理学习笔记">
+<meta property="og:url" content="https://wa-automaton.github.io/2019/03/06/矩阵树定理总结/index.html">
+<meta property="og:site_name" content="_WA自动机的blog">
+<meta property="og:description" content="高斯消元引入高斯消元听起来非常高大上，其实就是我们初中学的加减消元、代入消元法的程序化实现罢了。考虑一个方程组$$\begin{cases}A_{1,1} x_1+A_{1,2} x_2+A_{1,3} x_3+…+A_{1,n} x_n=C_1 \\A_{2,1} x_1+A_{2,2} x_2+A_{2,3} x_3+…+A_{2,n} x_n=C_2 \\…\\A_{k,1} x_1+A_{">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://wa-automaton.github.io/2019/03/06/矩阵树定理总结/Matrix1.jpg">
+<meta property="og:updated_time" content="2019-03-10T11:41:27.426Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="高斯消元-行列式-矩阵树定理学习笔记">
+<meta name="twitter:description" content="高斯消元引入高斯消元听起来非常高大上，其实就是我们初中学的加减消元、代入消元法的程序化实现罢了。考虑一个方程组$$\begin{cases}A_{1,1} x_1+A_{1,2} x_2+A_{1,3} x_3+…+A_{1,n} x_n=C_1 \\A_{2,1} x_1+A_{2,2} x_2+A_{2,3} x_3+…+A_{2,n} x_n=C_2 \\…\\A_{k,1} x_1+A_{">
+<meta name="twitter:image" content="https://wa-automaton.github.io/2019/03/06/矩阵树定理总结/Matrix1.jpg">
+
+
+
+
+
+
+  <link rel="canonical" href="https://wa-automaton.github.io/2019/03/06/矩阵树定理总结/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>高斯消元-行列式-矩阵树定理学习笔记 | _WA自动机的blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">_WA自动机的blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">HA省蒟蒻OIer</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-links">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/links/" rel="section"><i class="menu-item-icon fa fa-fw fa-link"></i> <br>links</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wa-automaton.github.io/2019/03/06/矩阵树定理总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="_WA自动机">
+      <meta itemprop="description" content="消えない过去、消えていく未来。">
+      <meta itemprop="image" content="/images/CNS.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="_WA自动机的blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">高斯消元-行列式-矩阵树定理学习笔记
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-06 16:29:37" itemprop="dateCreated datePublished" datetime="2019-03-06T16:29:37+08:00">2019-03-06</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-03-10 19:41:27" itemprop="dateModified" datetime="2019-03-10T19:41:27+08:00">2019-03-10</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/学习笔记/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="高斯消元"><a href="#高斯消元" class="headerlink" title="高斯消元"></a>高斯消元</h1><h2 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h2><p>高斯消元听起来非常高大上，其实就是我们初中学的加减消元、代入消元法的程序化实现罢了。<br>考虑一个方程组<br>$$<br>\begin{cases}<br>A_{1,1} x_1+A_{1,2} x_2+A_{1,3} x_3+…+A_{1,n} x_n=C_1 \\<br>A_{2,1} x_1+A_{2,2} x_2+A_{2,3} x_3+…+A_{2,n} x_n=C_2 \\<br>…\\<br>A_{k,1} x_1+A_{k,2} x_2+A_{k,3} x_3+…+A_{k,n} x_n=C_n \\<br>\end{cases}<br>$$<br>我们要求出它的一组解，或者判定无解或无穷多组解。这就是高斯消元的基础应用。  </p>
+<a id="more"></a>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p><strong>系数矩阵</strong>：上面的方程组中系数A组成的$n\times n$矩阵就是它的系数矩阵。<br><strong>增广矩阵</strong>：系数矩阵的最右边补上一列，表示$C_1,C_2,…,C_n$，得到的$n\times (n+1)$矩阵就成为增广矩阵。<br><strong>初等行列变换</strong>：  </p>
+<ol>
+<li>以一个非零的数乘矩阵的某一行（列）  </li>
+<li>把矩阵的某一行（列）的c倍加到另一行（列），这里c是任意数</li>
+<li>互换矩阵中两行（列）的位置  </li>
+</ol>
+<p><strong>阶梯型矩阵</strong>：一个矩阵成为阶梯型矩阵，需满足两个条件：  </p>
+<ol>
+<li>如果它既有零行，又有非零行，则零行在下，非零行在上。  </li>
+<li>如果它有非零行，则每个非零行的第一个非零元素所在列号自上而下严格单调上升。<br><strong>转置</strong>：把一个矩阵的行变成列，列变成行，得到的矩阵就是原矩阵的转置。记为$A^T$<br>如图所示，这就是一个阶梯型矩阵<br><img src="Matrix1.jpg" alt="示例1"></li>
+</ol>
+<p><strong>三角矩阵</strong>：三角矩阵分上三角矩阵和下三角矩阵两种。上三角矩阵的对角线左下方的系数全部为零，下三角矩阵的对角线右上方的系数全部为零。</p>
+<h2 id="算法流程"><a href="#算法流程" class="headerlink" title="算法流程"></a>算法流程</h2><p>它的基本思想是通过初等行变换，把增广矩阵消成上三角矩阵，此时最后一个非零行必然是$ax=b$的形式。所以我们已经得到了一个未知数的值。把这个值代回上面的所有方程中，则它的上面一行也变成了$ax=b$的形式…重复下去，我们就可以得到所有未知数的值了。^_^</p>
+<h2 id="代码-（SDOI2006-线性方程组）"><a href="#代码-（SDOI2006-线性方程组）" class="headerlink" title="代码 （SDOI2006 线性方程组）"></a>代码 （SDOI2006 线性方程组）</h2><p>改编自 ComeIntoPower，在此对他表示谢意QwQ<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="built_in">std</span>::<span class="built_in">fabs</span>;</span><br><span class="line"><span class="keyword">using</span> <span class="built_in">std</span>::swap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxn=<span class="number">1e3</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">double</span> eps=<span class="number">1e-9</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">Gauss_Elimination</span><span class="params">(<span class="keyword">double</span> (*A)[maxn],<span class="keyword">double</span>* f,<span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>,c=<span class="number">1</span>,j;i&lt;=n;++i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">for</span> (j=c;j&lt;=n &amp;&amp; <span class="built_in">fabs</span>(A[j][i])&lt;eps;++j);</span><br><span class="line">        <span class="keyword">if</span> (j==n+<span class="number">1</span>) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> k=<span class="number">1</span>;k&lt;=n+<span class="number">1</span>;++k) swap(A[c][k],A[j][k]);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=c+<span class="number">1</span>;j&lt;=n;++j)</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">fabs</span>(A[j][i])&gt;eps) </span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">double</span> t=A[j][i]/A[c][i];</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> k=i;k&lt;=n+<span class="number">1</span>;++k)</span><br><span class="line">                    A[j][k]-=t*A[c][k];</span><br><span class="line">            &#125;</span><br><span class="line">        ++c;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">bool</span> NoAnswer=<span class="literal">false</span>,InfAnswer=<span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=n;i;--i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">bool</span> NoVariables=<span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=i;j&lt;=n;++j)</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">fabs</span>(A[i][j])&gt;eps) NoVariables=<span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">if</span> (NoVariables)</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">fabs</span>(A[i][n+<span class="number">1</span>])&gt;eps) NoAnswer=<span class="literal">true</span>;<span class="comment">// 0=C,C!=0,无解</span></span><br><span class="line">            <span class="keyword">else</span> InfAnswer=<span class="literal">true</span>;<span class="comment">// 0=0,无穷多组解</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j=i+<span class="number">1</span>;j&lt;=n;++j) A[i][n+<span class="number">1</span>]-=A[i][j]*f[j];</span><br><span class="line">            f[i]=A[i][n+<span class="number">1</span>]/A[i][i];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (NoAnswer) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">return</span> !InfAnswer; <span class="comment">//无穷多解返回0，有唯一解返回1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">double</span> A[maxn][maxn],f[maxn];</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i)</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;=n+<span class="number">1</span>;++j)</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">"%lf"</span>,&amp;A[i][j]);</span><br><span class="line">    <span class="keyword">int</span> result=Gauss_Elimination(A,f,n);</span><br><span class="line">    <span class="keyword">if</span> (result^<span class="number">1</span>) <span class="keyword">return</span> <span class="built_in">printf</span>(<span class="string">"%d\n"</span>,result)&amp;<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i) <span class="built_in">printf</span>(<span class="string">"x%d=%.2lf\n"</span>,i,f[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="解释："><a href="#解释：" class="headerlink" title="解释："></a>解释：</h2><ol>
+<li><ul>
+<li>Q: 咋判断无解和无穷多组解鸭？</li>
+<li>A:当消元完成后，回代之前时，方程组若出现除了常数项之外全零的行，则一定无解或无穷多组解。（常数项为0是无穷多组解，非零则无解）</li>
+</ul>
+</li>
+<li><ul>
+<li>Q：代码中那个变量c的作用是啥呀？为啥不能用i代替呢？</li>
+<li>A：因为如果把c换成i，当存在一个自由元的时候，可能没法消出来全零行，而是直接跳过了本该消成全零行的那一行，将其放在了原来的位置，导致判断无穷解和无解的时候出偏差。（详见洛谷本题讨论的“Hack+1”篇目).</li>
+</ul>
+</li>
+</ol>
+<h1 id="行列式"><a href="#行列式" class="headerlink" title="行列式"></a>行列式</h1><h2 id="概念："><a href="#概念：" class="headerlink" title="概念："></a>概念：</h2><p><strong>主子式</strong>：对于一个n阶矩阵A，选取它的任意i行，将行号记为$T[1..i]$，并同时选取第$T[1..n]$列，得到的新矩阵即为原矩阵的一个i阶主子式。<br>新矩阵的行列式也可称为$|A|$的一个i阶主子式。</p>
+<p><strong>行列式</strong>：行列式是一个标量。对一个矩阵A来说，它的行列式（记作$|A|$)的定义是<br>$$|A|=\sum_P(-1)^{\delta(P)}\prod_{k=1}^n A_{i,P_k} $$<br>其中，$P$取遍$1..n$的所有排列，$\delta(P)$为P的逆序对数。这个柿子很好理解：就是从每行每列各选一个数，一共n个数，<br>行列式有以下性质：  </p>
+<ol>
+<li>$|A|=|A^T|$ (由定义，比较显然，在此不证)</li>
+<li><p>将一个矩阵的两行互换，行列式变号。<br>为了证明这个定理，我们需要首先证明一个引理：</p>
+<ul>
+<li>引理：一个排列的两项交换，逆序对改变量为奇数。<ul>
+<li>引理证明：不妨设$a&lt;b$.这样的交换对位置在a前面和在b后面的数没有影响，所以只需要考虑$a,b$之间的这个子区间。设交换的两项为$a,b.$把位置在$a.b$之间的数分类：设属于$(-\infty ,a)$的数量为$x$,属于$(a,b)$的数量为$y$,属于$(b,+\infty )$的数量为$z$。区间里交换以前的逆序对数为$x+z$,交换后为$(x+y)+(y+z)+1$，差值为$2y+1$,是奇数。</li>
+</ul>
+</li>
+</ul>
+<p>现在，证明这个定理就十分容易了。</p>
+<ul>
+<li>证明：交换矩阵的两行，相当于交换$P$的两项。逆序对改变量为奇数，所以行列式变号。</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li><strong>推论2.1</strong>：有两行相同的矩阵，行列式为$0$。<ul>
+<li>证明：交换这两行，行列式变号且值不变…</li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li>将某一行乘上$k$，行列式乘上$k$.<ul>
+<li>证明：你在这一行选出的每个数，都乘上了一个$k$。提取公因数即得。</li>
+</ul>
+</li>
+<li>两个矩阵如果只有一行不同，则它们的行列式和等于将不同的行相加得到的新矩阵的行列式。<ul>
+<li>证明：从定义下手。挺显然的吧qwq.</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li><strong>推论4.1</strong>：将一行乘上$k$的值加到另一行上，行列式不变。<ul>
+<li>证明：设被加的行为$x$，乘上$k$加到$A$上的为$y$。把这个新矩阵拆成两个矩阵$A,B$。其中$A$是原矩阵，$B$的$x$行改为$y*k$：则由性质2和3，$B$的行列式为$0$。又由性质4，新矩阵的行列式为$|A|+|B|$,和原来相等</li>
+<li><strong>有了这个推论和性质2，我们就可以做高斯消元啦！</strong></li>
+</ul>
+</li>
+</ul>
+<ol>
+<li><p>每行每列和均为0的矩阵，行列式为0.  </p>
+<ul>
+<li>证明：对原矩阵补上一列0，进行高斯消元。显然这个方程组有解——所有未知数都相等.则由高斯消元判断无穷多组解的条件珂得，消出的上三角矩阵中，一定有全零行，且常数项也是0。所以该矩阵的行列式为0.因为高消之后的矩阵的行列式只是原行列式乘上±1（只在交换行的时候行列式发生变号），所以原矩阵的行列式也为0.</li>
+</ul>
+</li>
+<li><p>对于一个上三角矩阵，它的行列式为对角线上数的乘积。</p>
+<ul>
+<li>证明：要在每行选取一个列不重复的数，且这些数乘积非0，则只能选对角线上的n个数。</li>
+</ul>
+</li>
+</ol>
+<h2 id="求解"><a href="#求解" class="headerlink" title="求解"></a>求解</h2><p>直接求解要枚举全排列，时间复杂度为$O(n!*n)$。不可接受。使用高斯消元将其化为上三角矩阵，珂在$O(n^3)$的时间内求n阶矩阵的行列式。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">long</span> <span class="keyword">double</span> <span class="title">determinant</span><span class="params">(<span class="keyword">long</span> <span class="keyword">double</span> (*A)[maxn],<span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> s=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>,c=<span class="number">1</span>,j;i&lt;=n;++i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">for</span> (j=c;j&lt;=n &amp;&amp; <span class="built_in">fabs</span>(A[j][i])&lt;eps;++j);</span><br><span class="line">        <span class="keyword">if</span> (j==n+<span class="number">1</span>) <span class="keyword">continue</span>;</span><br><span class="line">        s=-s;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> k=<span class="number">1</span>;k&lt;=n;++k) swap(A[c][k],A[j][k]);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=c+<span class="number">1</span>;j&lt;=n;++j)</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">fabs</span>(A[j][i])&gt;eps)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">long</span> <span class="keyword">double</span> t=A[j][i]/A[c][i];</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> k=i;k&lt;=n;++k)</span><br><span class="line">                    A[j][k]-=A[c][k]*t;</span><br><span class="line">            &#125;</span><br><span class="line">        ++c;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">double</span> ans=s;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i)</span><br><span class="line">        ans*=A[i][i];</span><br><span class="line">    <span class="keyword">return</span> ans; <span class="comment">// 这里要取绝对值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="矩阵树定理"><a href="#矩阵树定理" class="headerlink" title="矩阵树定理"></a>矩阵树定理</h1><h2 id="概念：-1"><a href="#概念：-1" class="headerlink" title="概念："></a>概念：</h2><ol>
+<li><strong>度数矩阵</strong>：定义$D$为图$G=(V,E),(|V|=n,|E|=m)$的度数矩阵，则$D$为一个$n\times n$矩阵，其中$D_{i,i}$为编号为i的结点的度数.</li>
+<li><strong>邻接矩阵</strong>：就是我们通常所说的邻接矩阵,记为$G$。</li>
+<li><strong>基尔霍夫矩阵（拉普拉斯矩阵）</strong>：定义基尔霍夫矩阵$K=D-G$.</li>
+</ol>
+<h2 id="定理："><a href="#定理：" class="headerlink" title="定理："></a>定理：</h2><p>当邻接矩阵不带边权时（若$u,v$有边，则$G(u,v)=G(v,u)=1$)，则有  </p>
+<blockquote>
+<p><strong>矩阵树定理</strong>：一个无重边、自环的图$G$的生成树个数，等于它的基尔霍夫矩阵任意一个n-1阶主子式的行列式的绝对值。    </p>
+</blockquote>
+<p>将邻接矩阵加上边权，得到新的邻接矩阵、度数矩阵和基尔霍夫矩阵。即：允许重边（甚至把边数扩展到$\mathbb R$)<br>此时：<br>$$D(i,i)=\sum_{(i,j)\in E} w((i,j))$$<br>$$G(i,j)=w(i,j)$$<br>$$K=D-G$$<br>推广一下，有：  </p>
+<blockquote>
+<p><strong>变元矩阵树定理</strong>：</p>
+<ol>
+<li>对生成树T定义求其边权之积的函数$F(T)=\prod_{e\in T}w(e)$</li>
+<li>对于每一棵生成树，求其$F$函数值的和得到$H(G)$:$H(G)=\sum_{T\ is\ a\ spanning\ tree\ of\ G}F(T)$</li>
+<li>则$H(G)$等于（带边权的）基尔霍夫矩阵的任意一个n-1阶主子式的行列式的绝对值.</li>
+<li>容易发现，当边权都为1的时候，它就是普通的矩阵树定理.</li>
+</ol>
+</blockquote>
+<p>对于有向图来说，有：</p>
+<blockquote>
+<p><strong>有向图的矩阵树定理</strong><br>定义<br>$$K_{i,j}=−w(i,j)$$<br>$$K_{i,i}=∑<em>{j=1}^n w(i,j)$$<br>去掉第i行第i列，则能求出以i为根的<strong>外向树</strong>的数量（边权积）<br>同样地，定义<br>$$K</em>{i,j}=−w(i,j)$$<br>$$K_{i,i}=∑_{j=1}^n w(j,i)$$<br>则能求<strong>内向树</strong>的数量（边权积）</p>
+</blockquote>
+<p>(原谅我语文学得不好没法简洁地描述上述定理qwq…)</p>
+<h2 id="证明："><a href="#证明：" class="headerlink" title="证明："></a>证明：</h2><p><del>我们采用闭眼证明法…嗯！它是对的！^_^..</del><br><del>事实上博主太菜并不会证明..</del>(留坑)</p>
+<h2 id="应用："><a href="#应用：" class="headerlink" title="应用："></a>应用：</h2><p><a href="https://www.lydsy.com/JudgeOnline/problem.php?id=1002" target="_blank" rel="noopener">BZOJ1002</a>： <a href="https://wa-automaton.github.io/2019/03/03/BZOJ1002/">（假的）题解戳这里~</a><br><a href="https://www.lydsy.com/JudgeOnline/problem.php?id=1016" target="_blank" rel="noopener">BZOJ1016</a>：<a href="https://wa-automaton.github.io/2019/03/08/BZOJ1016/">题解戳这里~</a><br><a href="https://www.lydsy.com/JudgeOnline/problem.php?id=3534" target="_blank" rel="noopener">BZOJ3524</a>：<a href="https://wa-automaton.github.io/2019/03/07/BZOJ3534/">题解戳这里~</a></p>
+<h1 id="引用-amp-鸣谢"><a href="#引用-amp-鸣谢" class="headerlink" title="引用&amp;鸣谢"></a>引用&amp;鸣谢</h1><ul>
+<li>高斯消元的模板来自CDQZ ComeIntoPower巨佬</li>
+<li>感谢Memset0巨佬Hack掉我原先的高斯消元。</li>
+<li>矩阵树定理一篇大量来源于<a href="https://www.cnblogs.com/candy99/p/6420935.html" target="_blank" rel="noopener">Candy?</a>的博客和<a href="https://www.cnblogs.com/reverymoon/p/9512836.html" target="_blank" rel="noopener">ReMoon</a>。</li>
+</ul>
+<p><strong>对以上巨佬表示感谢。</strong></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/数学/" rel="tag"># 数学</a>
+          
+            <a href="/tags/矩阵树定理/" rel="tag"># 矩阵树定理</a>
+          
+            <a href="/tags/计数/" rel="tag"># 计数</a>
+          
+            <a href="/tags/线性代数/" rel="tag"># 线性代数</a>
+          
+            <a href="/tags/高斯消元/" rel="tag"># 高斯消元</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/03/BZOJ1003/" rel="next" title="BZOJ1003">
+                <i class="fa fa-chevron-left"></i> BZOJ1003
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/07/BZOJ3534/" rel="prev" title="[BZOJ3534][SDOI2014]重建">
+                [BZOJ3534][SDOI2014]重建 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="gitalk-container">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/CNS.jpg" alt="_WA自动机">
+            
+              <p class="site-author-name" itemprop="name">_WA自动机</p>
+              <p class="site-description motion-element" itemprop="description">消えない过去、消えていく未来。</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">24</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">36</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#高斯消元"><span class="nav-number">1.</span> <span class="nav-text">高斯消元</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#引入"><span class="nav-number">1.1.</span> <span class="nav-text">引入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">1.2.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法流程"><span class="nav-number">1.3.</span> <span class="nav-text">算法流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码-（SDOI2006-线性方程组）"><span class="nav-number">1.4.</span> <span class="nav-text">代码 （SDOI2006 线性方程组）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解释："><span class="nav-number">1.5.</span> <span class="nav-text">解释：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#行列式"><span class="nav-number">2.</span> <span class="nav-text">行列式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#概念："><span class="nav-number">2.1.</span> <span class="nav-text">概念：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#求解"><span class="nav-number">2.2.</span> <span class="nav-text">求解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#矩阵树定理"><span class="nav-number">3.</span> <span class="nav-text">矩阵树定理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#概念：-1"><span class="nav-number">3.1.</span> <span class="nav-text">概念：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定理："><span class="nav-number">3.2.</span> <span class="nav-text">定理：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#证明："><span class="nav-number">3.3.</span> <span class="nav-text">证明：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用："><span class="nav-number">3.4.</span> <span class="nav-text">应用：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#引用-amp-鸣谢"><span class="nav-number">4.</span> <span class="nav-text">引用&amp;鸣谢</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">_WA自动机</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v6.7.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.7.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.7.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  
+    
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+
+
+<script src="//cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js"></script>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: 'aed4f9ef9512db77c2b7',
+    clientSecret: 'c13990ab899c56ed5678d051d1f4cc71b4af4d7f',
+    repo: 'wa-automaton.github.io',
+    owner: 'WA-automaton',
+    admin: ['WA-automaton'],
+    id: md5(location.pathname),
+    distractionFreeMode: 'true'
+  });
+  gitalk.render('gitalk-container');
+</script>
+
+  
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      }
+      else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+  
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      
+      equationNumbers: {
+        autoNumber: "AMS"
+      }
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+      for (i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+<style>
+.MathJax_Display {
+  overflow: auto hidden;
+}
+</style>
+
+    
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  <style>
+    .copy-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: #333;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+      user-select: none;
+      outline: 0;
+    }
+
+    .highlight-wrap .copy-btn {
+      transition: opacity .3s ease-in-out;
+      opacity: 0;
+      padding: 2px 6px;
+      position: absolute;
+      right: 4px;
+      top: 8px;
+    }
+
+    .highlight-wrap:hover .copy-btn,
+    .highlight-wrap .copy-btn:focus {
+      opacity: 1
+    }
+
+    .highlight-wrap {
+      position: relative;
+    }
+  </style>
+  <script>
+    $('.highlight').each(function(i, e) {
+      var $wrap = $('<div>').addClass('highlight-wrap');
+      $(e).after($wrap);
+      $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+        var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+          return $(e).text();
+        }).toArray().join('\n');
+        var ta = document.createElement('textarea');
+        var range = document.createRange(); //For Chrome
+        var sel = window.getSelection(); //For Chrome
+        var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+        ta.style.top = yPosition + 'px'; //Prevent page scroll
+        ta.style.position = 'absolute';
+        ta.style.opacity = '0';
+        ta.value = code;
+        ta.textContent = code; //For FireFox
+        ta.contentEditable = true;
+        ta.readOnly = false;
+        document.body.appendChild(ta);
+        range.selectNode(ta);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        ta.setSelectionRange(0, code.length);
+        var result = document.execCommand('copy');
+        
+          if (result) $(this).text('复制成功');
+          else $(this).text('复制失败');
+        
+        ta.blur(); //For iOS
+        $(this).blur();
+      })).on('mouseleave', function(e) {
+        var $b = $(this).find('.copy-btn');
+        setTimeout(function() {
+          $b.text('复制');
+        }, 300);
+      }).append(e);
+    })
+  </script>
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/kutori/kutori.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacityDefault":1,"opacityOnHover":0.7},"log":false});</script></body>
+</html>

@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <meta name="baidu-site-verification" content="xah9s00UW0">
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="不要在意网址…打错了qwq 题目大意 Informatik verbindet dich und mich.信息将你我连结。   维护一个数列A，支持两种操作：  0 l r ：表示将A[l..r]这个区间的每个数$A_i$变成$c^{A_i}$（c是输入给定的常量） 1 l r : 表示求$A[l..r]$的和，结果对p（输入给定的常量）取模。">
+<meta name="keywords" content="数学,线段树,欧拉定理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[六省联考2017]相逢是问候">
+<meta property="og:url" content="https://wa-automaton.github.io/2019/03/18/九省联考2018-相逢是问候/index.html">
+<meta property="og:site_name" content="_WA自动机的blog">
+<meta property="og:description" content="不要在意网址…打错了qwq 题目大意 Informatik verbindet dich und mich.信息将你我连结。   维护一个数列A，支持两种操作：  0 l r ：表示将A[l..r]这个区间的每个数$A_i$变成$c^{A_i}$（c是输入给定的常量） 1 l r : 表示求$A[l..r]$的和，结果对p（输入给定的常量）取模。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-03-18T14:52:41.770Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[六省联考2017]相逢是问候">
+<meta name="twitter:description" content="不要在意网址…打错了qwq 题目大意 Informatik verbindet dich und mich.信息将你我连结。   维护一个数列A，支持两种操作：  0 l r ：表示将A[l..r]这个区间的每个数$A_i$变成$c^{A_i}$（c是输入给定的常量） 1 l r : 表示求$A[l..r]$的和，结果对p（输入给定的常量）取模。">
+
+
+
+
+
+
+  <link rel="canonical" href="https://wa-automaton.github.io/2019/03/18/九省联考2018-相逢是问候/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>[六省联考2017]相逢是问候 | _WA自动机的blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">_WA自动机的blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">HA省蒟蒻OIer</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-links">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/links/" rel="section"><i class="menu-item-icon fa fa-fw fa-link"></i> <br>links</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wa-automaton.github.io/2019/03/18/九省联考2018-相逢是问候/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="_WA自动机">
+      <meta itemprop="description" content="消えない过去、消えていく未来。">
+      <meta itemprop="image" content="/images/CNS.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="_WA自动机的blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[六省联考2017]相逢是问候
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-18 13:17:04 / 修改时间：22:52:41" itemprop="dateCreated datePublished" datetime="2019-03-18T13:17:04+08:00">2019-03-18</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/题解/" itemprop="url" rel="index"><span itemprop="name">题解</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><del>不要在意网址…打错了qwq</del></p>
+<h1 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h1><blockquote>
+<p>Informatik verbindet dich und mich.<br>信息将你我连结。 </p>
+</blockquote>
+<p>维护一个数列A，支持两种操作：</p>
+<ul>
+<li>0 l r ：表示将A[l..r]这个区间的每个数$A_i$变成$c^{A_i}$（c是输入给定的常量）</li>
+<li>1 l r : 表示求$A[l..r]$的和，结果对p（输入给定的常量）取模。</li>
+</ul>
+<a id="more"></a>
+<h1 id="数据范围与约定"><a href="#数据范围与约定" class="headerlink" title="数据范围与约定"></a>数据范围与约定</h1><ul>
+<li>对于 100% 的测试点， $1 \leq n \leq 50000; 1 \leq m \leq 50000; 1 \leq p \leq 100000000; 0 &lt; c &lt;p; 0 \leq ai &lt; p$。</li>
+</ul>
+<h1 id="解法"><a href="#解法" class="headerlink" title="解法"></a>解法</h1><p>观察数据范围，$n,m\leq 50000$。这个<del>不伦不类的</del>范围应该是$O(n \log n \log C)$之类的吧？<br>还有区间求和…?线段树？<br>不知道大家有没有做过线段树区间取模和区间开方之类维护奇怪运算的题？它们有一个共同点：暴力递归到叶子节点修改，因为运算的特殊性质决定了修改次数不超过$O(n\log C)$，所以复杂度正确。<br>考虑这个奇怪的运算。现在我们要解决的问题就是如何快速（$O(\log\ n)$以内）求这个：<br>$$\LARGE{c^{c^{c^{c^{…a_i}}}}}$$<br>不知道您有没有做过<a href="https://www.luogu.org/problemnew/show/P4139" target="_blank" rel="noopener">这个题</a>，如果没有珂以去做一下qwq.<br>做完了吧？那现在您一定会了欧拉定理：<br>$$<br>a^b \bmod p=\left {<br>\begin{aligned}<br>&amp;a^{b \bmod \phi (p) +\phi (p)} &amp;b\geq \phi (p)\\<br>&amp;a^b &amp;b&lt;\phi (p)<br>\end{aligned}<br>\right.<br>$$</p>
+<blockquote>
+<p>引理：对于一个数$n\in \mathbb N^*$，一直取$\phi (n)$,最多取$O(\log n)$次就会变成1.<br>简要证明：对于偶数，所有偶数都与它不互质。取$\phi (n)$至少会除以2.对于奇数，考虑定义式，它一定会变成偶数。所以最多$2\log n$次会变成1.</p>
+</blockquote>
+<p>所以当修改次数太大的时候，从某一层开始，模数都是1.这就没必要算了。所以用区间开方的思路，线段树记录区间和、区间修改次数。修改次数超过最大值时忽略修改。否则继续递归。每递归到叶子节点时，暴力修改叶子的值。顺便维护区间和。这时，总复杂度是$O(n \log^2 n\log C)$的。不太能承受。但是我们发现计算过程中模数只有$O(\log n)$种取值，所以光速幂预处理一下，就可以少掉一个log啦。然后就珂以愉快地通过本题啦。好像还要wys<del>或者mcfx</del>一下代码</p>
+<h1 id="代码："><a href="#代码：" class="headerlink" title="代码："></a>代码：</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> GCC optimize(<span class="meta-string">"-Ofast"</span>)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> GCC optimize(3)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cctype&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utility&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ls l,mid,o&lt;&lt;1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> rs mid+1,r,o&lt;&lt;1|1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="built_in">std</span>::pair;</span><br><span class="line"><span class="keyword">using</span> <span class="built_in">std</span>::make_pair;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxn=(<span class="number">5e4</span>+<span class="number">100</span>)*<span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> a[maxn&lt;&lt;<span class="number">2</span>],count[maxn&lt;&lt;<span class="number">2</span>],P,c,maxlim;</span><br><span class="line">ll sumv[maxn&lt;&lt;<span class="number">2</span>];</span><br><span class="line"><span class="keyword">int</span> phi[maxn],Sqrt[maxn];</span><br><span class="line"></span><br><span class="line"><span class="keyword">char</span> buf[<span class="number">1</span>&lt;&lt;<span class="number">24</span>],*fs;</span><br><span class="line">ll c_sqrt[<span class="number">150</span>][maxn],c_x[<span class="number">150</span>][maxn];</span><br><span class="line"><span class="keyword">bool</span> is_greater[<span class="number">100</span>][maxn],is_greater_sqrt[<span class="number">100</span>][maxn];</span><br><span class="line"></span><br><span class="line"><span class="comment">// #define gc() getchar()</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> gc() (*fs++)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="class"><span class="keyword">class</span> <span class="title">T</span>&gt;<span class="title">inline</span> <span class="title">T</span> <span class="title">max</span>(<span class="title">T</span> <span class="title">a</span>,<span class="title">T</span> <span class="title">b</span>)&#123;</span><span class="keyword">return</span> a&lt;b?b:a;&#125;</span><br><span class="line"><span class="keyword">template</span>&lt;<span class="class"><span class="keyword">class</span> <span class="title">T</span>&gt;<span class="title">inline</span> <span class="title">T</span> <span class="title">min</span>(<span class="title">T</span> <span class="title">a</span>,<span class="title">T</span> <span class="title">b</span>)&#123;</span><span class="keyword">return</span> a&lt;b?a:b;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> ch;</span><br><span class="line">    <span class="keyword">while</span> (!<span class="built_in">isdigit</span>(ch=gc()));</span><br><span class="line">    <span class="keyword">int</span> x=ch^<span class="number">48</span>;</span><br><span class="line">    <span class="keyword">while</span> (<span class="built_in">isdigit</span>(ch=gc())) x=x*<span class="number">10</span>+ch<span class="number">-48</span>;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">inline</span> pair&lt;ll,<span class="keyword">bool</span>&gt; qpow(ll a,ll b,ll P)</span><br><span class="line">&#123;</span><br><span class="line">    ll ans=<span class="number">1</span>%P;</span><br><span class="line">    <span class="keyword">bool</span> gr=<span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">for</span> (;b;b&gt;&gt;=<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (b&amp;<span class="number">1</span>) ans=ans*a;</span><br><span class="line">        <span class="keyword">if</span> (ans&gt;=P) ans%=P,gr=<span class="literal">true</span>;</span><br><span class="line">        a=a*a%P;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> make_pair(ans,gr);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">CalcPower</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> now)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> T=Sqrt[now]=<span class="built_in">sqrt</span>(x);</span><br><span class="line">    c_x[now][<span class="number">0</span>]=<span class="number">1</span>;c_x[now][<span class="number">1</span>]=c;</span><br><span class="line">    c_sqrt[now][<span class="number">0</span>]=<span class="number">1</span>;pair&lt;ll,<span class="keyword">bool</span>&gt; pr=qpow(c,T,x);c_sqrt[now][<span class="number">1</span>]=pr.first;</span><br><span class="line">    <span class="keyword">if</span> (c_x[now][<span class="number">1</span>]&gt;=x) is_greater[now][<span class="number">1</span>]=<span class="literal">true</span>,c_x[now][<span class="number">1</span>]%=x;</span><br><span class="line">    <span class="keyword">if</span> (pr.second) is_greater_sqrt[now][<span class="number">1</span>]=<span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">if</span> (c_x[now][<span class="number">0</span>]&gt;=x) is_greater[now][<span class="number">0</span>]=<span class="literal">true</span>,c_x[now][<span class="number">0</span>]%=x;</span><br><span class="line">    <span class="keyword">if</span> (c_sqrt[now][<span class="number">0</span>]&gt;=x) is_greater_sqrt[now][<span class="number">0</span>]=<span class="literal">true</span>,c_sqrt[now][<span class="number">0</span>]%=x;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">2</span>;i&lt;=T*<span class="number">2</span>;++i)</span><br><span class="line">    &#123;</span><br><span class="line">        c_x[now][i]=c_x[now][i<span class="number">-1</span>]*c;</span><br><span class="line">        c_sqrt[now][i]=c_sqrt[now][i<span class="number">-1</span>]*c_sqrt[now][<span class="number">1</span>];</span><br><span class="line">        <span class="keyword">if</span> (c_x[now][i]&gt;=x) is_greater[now][i]=<span class="literal">true</span>,c_x[now][i]%=x;</span><br><span class="line">        <span class="keyword">if</span> (c_sqrt[now][i]&gt;=x) is_greater_sqrt[now][i]=<span class="literal">true</span>,c_sqrt[now][i]%=x;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">inline</span> pair&lt;ll,<span class="keyword">bool</span>&gt; Fastpow(<span class="keyword">int</span> b,<span class="keyword">int</span> now)</span><br><span class="line">&#123;</span><br><span class="line">    ll t=c_x[now][b%Sqrt[now]]*c_sqrt[now][b/Sqrt[now]];</span><br><span class="line">    <span class="keyword">bool</span> flag=is_greater[now][b%Sqrt[now]]|is_greater_sqrt[now][b/Sqrt[now]];</span><br><span class="line">    <span class="keyword">if</span> (t&gt;=phi[now]) flag=<span class="literal">true</span>,t%=phi[now];</span><br><span class="line">    <span class="keyword">return</span> make_pair(t,flag);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">Getphi</span><span class="params">(<span class="keyword">int</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ret=x;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">2</span>;i&lt;=x;++i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (x%i==<span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">while</span> (x%i==<span class="number">0</span>) x/=i;</span><br><span class="line">            ret=ret/i*(i<span class="number">-1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (x&gt;<span class="number">1</span>) ret=ret/x*(x<span class="number">-1</span>);</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">Prework</span><span class="params">(<span class="keyword">int</span> P,<span class="keyword">int</span> i=<span class="number">1</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ++maxlim;</span><br><span class="line">    <span class="keyword">if</span> (P==<span class="number">1</span>) phi[i]=<span class="number">1</span>;</span><br><span class="line">    CalcPower(phi[i]=Getphi(P),i);</span><br><span class="line">    <span class="keyword">if</span> (P==<span class="number">1</span>) <span class="keyword">return</span>;</span><br><span class="line">    Prework(phi[i],i+<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> ll <span class="title">CalcNumber</span><span class="params">(<span class="keyword">int</span> expo,<span class="keyword">int</span> depth,<span class="keyword">int</span> limit)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// if (phi[depth-1]==1) return 0;</span></span><br><span class="line">    <span class="keyword">if</span> (depth==limit+<span class="number">1</span>) <span class="keyword">return</span> expo&gt;phi[limit]?expo%phi[limit]+phi[limit]:expo;</span><br><span class="line">    <span class="keyword">int</span> t=CalcNumber(expo,depth+<span class="number">1</span>,limit);</span><br><span class="line">    pair&lt;ll,<span class="keyword">bool</span>&gt; pr=Fastpow(t,depth<span class="number">-1</span>);</span><br><span class="line">    <span class="comment">// printf("depth=%d ,exp=%d\n",depth,pr.second?pr.first+phi[depth-1]:pr.first);</span></span><br><span class="line">    <span class="keyword">if</span> (pr.second==<span class="number">1</span>) <span class="keyword">return</span> pr.first+phi[depth<span class="number">-1</span>];</span><br><span class="line">    <span class="keyword">return</span> pr.first;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">Pushup</span><span class="params">(<span class="keyword">int</span> o)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    sumv[o]=sumv[o&lt;&lt;<span class="number">1</span>]+sumv[o&lt;&lt;<span class="number">1</span>|<span class="number">1</span>];</span><br><span class="line">    <span class="keyword">if</span> (sumv[o]&gt;=P) sumv[o]-=P;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">BuildSeg</span><span class="params">(<span class="keyword">int</span> l,<span class="keyword">int</span> r,<span class="keyword">int</span> o)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (l==r) <span class="keyword">return</span> <span class="keyword">void</span>(sumv[o]=a[l]);</span><br><span class="line">    <span class="keyword">int</span> mid=(l+r)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">    BuildSeg(ls);BuildSeg(rs);</span><br><span class="line">    Pushup(o);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">Modify</span><span class="params">(<span class="keyword">int</span> L,<span class="keyword">int</span> R,<span class="keyword">int</span> l,<span class="keyword">int</span> r,<span class="keyword">int</span> o)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (count[o]&gt;=maxlim) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">if</span> (l==r)</span><br><span class="line">    &#123;</span><br><span class="line">        ++count[o];</span><br><span class="line">        sumv[o]=CalcNumber(a[l],<span class="number">1</span>,count[o])%P;</span><br><span class="line">        <span class="comment">// printf("pos=%d num=%d\n",l,sumv[o]);</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> mid=(l+r)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (L&lt;=mid) Modify(L,R,ls);</span><br><span class="line">    <span class="keyword">if</span> (R&gt; mid) Modify(L,R,rs);</span><br><span class="line">    Pushup(o);</span><br><span class="line">    count[o]=min(count[o&lt;&lt;<span class="number">1</span>],count[o&lt;&lt;<span class="number">1</span>|<span class="number">1</span>]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">Query</span><span class="params">(<span class="keyword">int</span> L,<span class="keyword">int</span> R,<span class="keyword">int</span> l,<span class="keyword">int</span> r,<span class="keyword">int</span> o)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (L&lt;=l &amp;&amp; R&gt;=r) <span class="keyword">return</span> sumv[o];</span><br><span class="line">    <span class="keyword">int</span> mid=(l+r)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> tot=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (L&lt;=mid) tot+=Query(L,R,ls);</span><br><span class="line">    <span class="keyword">if</span> (R&gt; mid) tot+=Query(L,R,rs);</span><br><span class="line">    <span class="keyword">if</span> (tot&gt;=P) tot-=P;</span><br><span class="line">    <span class="keyword">return</span> tot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    fread(fs=buf,<span class="number">1</span>,<span class="number">1</span>&lt;&lt;<span class="number">24</span>,<span class="built_in">stdin</span>);</span><br><span class="line">    <span class="keyword">int</span> n=read(),m=read();phi[<span class="number">0</span>]=P=read(),c=read();Sqrt[<span class="number">0</span>]=<span class="built_in">sqrt</span>(P);</span><br><span class="line">    CalcPower(P,<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i) a[i]=read();</span><br><span class="line">    Prework(P);BuildSeg(<span class="number">1</span>,n,<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>,opt,l,r;i&lt;=m;++i)</span><br><span class="line">    &#123;</span><br><span class="line">        opt=read();l=read();r=read();</span><br><span class="line">        <span class="keyword">if</span> (opt) <span class="built_in">printf</span>(<span class="string">"%d\n"</span>,Query(l,r,<span class="number">1</span>,n,<span class="number">1</span>));</span><br><span class="line">        <span class="keyword">else</span> Modify(l,r,<span class="number">1</span>,n,<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/数学/" rel="tag"># 数学</a>
+          
+            <a href="/tags/线段树/" rel="tag"># 线段树</a>
+          
+            <a href="/tags/欧拉定理/" rel="tag"># 欧拉定理</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/08/BZOJ1016/" rel="next" title="BZOJ1016">
+                <i class="fa fa-chevron-left"></i> BZOJ1016
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/18/ZJOI2016-书架/" rel="prev" title="[ZJOI2016]书架">
+                [ZJOI2016]书架 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="gitalk-container">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/CNS.jpg" alt="_WA自动机">
+            
+              <p class="site-author-name" itemprop="name">_WA自动机</p>
+              <p class="site-description motion-element" itemprop="description">消えない过去、消えていく未来。</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">24</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">36</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#题目大意"><span class="nav-number">1.</span> <span class="nav-text">题目大意</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据范围与约定"><span class="nav-number">2.</span> <span class="nav-text">数据范围与约定</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解法"><span class="nav-number">3.</span> <span class="nav-text">解法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#代码："><span class="nav-number">4.</span> <span class="nav-text">代码：</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">_WA自动机</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v6.7.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.7.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.7.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  
+    
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+
+
+<script src="//cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js"></script>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: 'aed4f9ef9512db77c2b7',
+    clientSecret: 'c13990ab899c56ed5678d051d1f4cc71b4af4d7f',
+    repo: 'wa-automaton.github.io',
+    owner: 'WA-automaton',
+    admin: ['WA-automaton'],
+    id: md5(location.pathname),
+    distractionFreeMode: 'true'
+  });
+  gitalk.render('gitalk-container');
+</script>
+
+  
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      }
+      else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+  
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      
+      equationNumbers: {
+        autoNumber: "AMS"
+      }
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+      for (i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+<style>
+.MathJax_Display {
+  overflow: auto hidden;
+}
+</style>
+
+    
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  <style>
+    .copy-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: #333;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+      user-select: none;
+      outline: 0;
+    }
+
+    .highlight-wrap .copy-btn {
+      transition: opacity .3s ease-in-out;
+      opacity: 0;
+      padding: 2px 6px;
+      position: absolute;
+      right: 4px;
+      top: 8px;
+    }
+
+    .highlight-wrap:hover .copy-btn,
+    .highlight-wrap .copy-btn:focus {
+      opacity: 1
+    }
+
+    .highlight-wrap {
+      position: relative;
+    }
+  </style>
+  <script>
+    $('.highlight').each(function(i, e) {
+      var $wrap = $('<div>').addClass('highlight-wrap');
+      $(e).after($wrap);
+      $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function(e) {
+        var code = $(this).parent().find('.code').find('.line').map(function(i, e) {
+          return $(e).text();
+        }).toArray().join('\n');
+        var ta = document.createElement('textarea');
+        var range = document.createRange(); //For Chrome
+        var sel = window.getSelection(); //For Chrome
+        var yPosition = window.pageYOffset || document.documentElement.scrollTop;
+        ta.style.top = yPosition + 'px'; //Prevent page scroll
+        ta.style.position = 'absolute';
+        ta.style.opacity = '0';
+        ta.value = code;
+        ta.textContent = code; //For FireFox
+        ta.contentEditable = true;
+        ta.readOnly = false;
+        document.body.appendChild(ta);
+        range.selectNode(ta);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        ta.setSelectionRange(0, code.length);
+        var result = document.execCommand('copy');
+        
+          if (result) $(this).text('复制成功');
+          else $(this).text('复制失败');
+        
+        ta.blur(); //For iOS
+        $(this).blur();
+      })).on('mouseleave', function(e) {
+        var $b = $(this).find('.copy-btn');
+        setTimeout(function() {
+          $b.text('复制');
+        }, 300);
+      }).append(e);
+    })
+  </script>
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/kutori/kutori.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"react":{"opacityDefault":1,"opacityOnHover":0.7},"log":false});</script></body>
+</html>
