@@ -485,7 +485,7 @@
 <h1 id="数据范围与约定"><a href="#数据范围与约定" class="headerlink" title="数据范围与约定"></a>数据范围与约定</h1><ul>
 <li>对于 100% 的测试点， $1 \leq n \leq 50000; 1 \leq m \leq 50000; 1 \leq p \leq 100000000; 0 &lt; c &lt;p; 0 \leq ai &lt; p$。</li>
 </ul>
-<h1 id="解法"><a href="#解法" class="headerlink" title="解法"></a>解法</h1><p>观察数据范围，$n,m\leq 50000$。这个<del>不伦不类的</del>范围应该是$O(n \log n \log C)$之类的吧？<br>还有区间求和…?线段树？<br>不知道大家有没有做过线段树区间取模和区间开方之类维护奇怪运算的题？它们有一个共同点：暴力递归到叶子节点修改，因为运算的特殊性质决定了修改次数不超过$O(n\log C)$，所以复杂度正确。<br>考虑这个奇怪的运算。现在我们要解决的问题就是如何快速（$O(\log\ n)$以内）求这个：<br>$$\LARGE{c^{c^{c^{c^{…a_i}}}}}$$<br>不知道您有没有做过<a href="https://www.luogu.org/problemnew/show/P4139" target="_blank" rel="noopener">这个题</a>，如果没有珂以去做一下qwq.<br>做完了吧？那现在您一定会了欧拉定理：<br>$$<br>a^b \bmod p=\left {<br>\begin{aligned}<br>&amp;a^{b \bmod \phi (p) +\phi (p)} &amp;b\geq \phi (p)\\<br>&amp;a^b &amp;b&lt;\phi (p)<br>\end{aligned}<br>\right.<br>$$</p>
+<h1 id="解法"><a href="#解法" class="headerlink" title="解法"></a>解法</h1><p>观察数据范围，$n,m\leq 50000$。这个<del>不伦不类的</del>范围应该是$O(n \log n \log C)$之类的吧？<br>还有区间求和…?线段树？<br>不知道大家有没有做过线段树区间取模和区间开方之类维护奇怪运算的题？它们有一个共同点：暴力递归到叶子节点修改，因为运算的特殊性质决定了修改次数不超过$O(n\log C)$，所以复杂度正确。<br>考虑这个奇怪的运算。现在我们要解决的问题就是如何快速（$O(\log n)$以内）求这个：<br>$$\LARGE{c^{c^{c^{c^{…a_i}}}}}$$<br>不知道您有没有做过<a href="https://www.luogu.org/problemnew/show/P4139" target="_blank" rel="noopener">这个题</a>，如果没有珂以去做一下qwq.<br>做完了吧？那现在您一定会了欧拉定理：<br>$$<br>a^b \bmod p=\left \{<br>\begin{aligned}<br>&amp;a^{b \bmod \phi (p) +\phi (p)} &amp;b\geq \phi (p)\\\\<br>&amp;a^b &amp;b&lt;\phi (p)<br>\end{aligned}<br>\right.<br>$$</p>
 <blockquote>
 <p>引理：对于一个数$n\in \mathbb N^*$，一直取$\phi (n)$,最多取$O(\log n)$次就会变成1.<br>简要证明：对于偶数，所有偶数都与它不互质。取$\phi (n)$至少会除以2.对于奇数，考虑定义式，它一定会变成偶数。所以最多$2\log n$次会变成1.</p>
 </blockquote>

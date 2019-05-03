@@ -100,19 +100,19 @@
 
 
 
-  <meta name="description" content="高斯消元引入高斯消元听起来非常高大上，其实就是我们初中学的加减消元、代入消元法的程序化实现罢了。考虑一个方程组$$\begin{cases}A_{1,1} x_1+A_{1,2} x_2+A_{1,3} x_3+…+A_{1,n} x_n=C_1 \\A_{2,1} x_1+A_{2,2} x_2+A_{2,3} x_3+…+A_{2,n} x_n=C_2 \\…\\A_{k,1} x_1+A_{">
+  <meta name="description" content="高斯消元引入高斯消元听起来非常高大上，其实就是我们初中学的加减消元、代入消元法的程序化实现罢了。考虑一个方程组$$\begin{cases}A_{1,1} x_1+A_{1,2} x_2+A_{1,3} x_3+…+A_{1,n} x_n=C_1 \\\\A_{2,1} x_1+A_{2,2} x_2+A_{2,3} x_3+…+A_{2,n} x_n=C_2 \\\\…\\\\A_{k,1} x">
 <meta name="keywords" content="矩阵树定理,数学,计数,线性代数,高斯消元">
 <meta property="og:type" content="article">
 <meta property="og:title" content="高斯消元-行列式-矩阵树定理学习笔记">
 <meta property="og:url" content="https://wa-automaton.github.io/2019/03/06/矩阵树定理总结/index.html">
 <meta property="og:site_name" content="_WA自动机的blog">
-<meta property="og:description" content="高斯消元引入高斯消元听起来非常高大上，其实就是我们初中学的加减消元、代入消元法的程序化实现罢了。考虑一个方程组$$\begin{cases}A_{1,1} x_1+A_{1,2} x_2+A_{1,3} x_3+…+A_{1,n} x_n=C_1 \\A_{2,1} x_1+A_{2,2} x_2+A_{2,3} x_3+…+A_{2,n} x_n=C_2 \\…\\A_{k,1} x_1+A_{">
+<meta property="og:description" content="高斯消元引入高斯消元听起来非常高大上，其实就是我们初中学的加减消元、代入消元法的程序化实现罢了。考虑一个方程组$$\begin{cases}A_{1,1} x_1+A_{1,2} x_2+A_{1,3} x_3+…+A_{1,n} x_n=C_1 \\\\A_{2,1} x_1+A_{2,2} x_2+A_{2,3} x_3+…+A_{2,n} x_n=C_2 \\\\…\\\\A_{k,1} x">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://wa-automaton.github.io/2019/03/06/矩阵树定理总结/Matrix1.jpg">
 <meta property="og:updated_time" content="2019-03-10T11:41:27.426Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="高斯消元-行列式-矩阵树定理学习笔记">
-<meta name="twitter:description" content="高斯消元引入高斯消元听起来非常高大上，其实就是我们初中学的加减消元、代入消元法的程序化实现罢了。考虑一个方程组$$\begin{cases}A_{1,1} x_1+A_{1,2} x_2+A_{1,3} x_3+…+A_{1,n} x_n=C_1 \\A_{2,1} x_1+A_{2,2} x_2+A_{2,3} x_3+…+A_{2,n} x_n=C_2 \\…\\A_{k,1} x_1+A_{">
+<meta name="twitter:description" content="高斯消元引入高斯消元听起来非常高大上，其实就是我们初中学的加减消元、代入消元法的程序化实现罢了。考虑一个方程组$$\begin{cases}A_{1,1} x_1+A_{1,2} x_2+A_{1,3} x_3+…+A_{1,n} x_n=C_1 \\\\A_{2,1} x_1+A_{2,2} x_2+A_{2,3} x_3+…+A_{2,n} x_n=C_2 \\\\…\\\\A_{k,1} x">
 <meta name="twitter:image" content="https://wa-automaton.github.io/2019/03/06/矩阵树定理总结/Matrix1.jpg">
 
 
@@ -486,7 +486,7 @@
       
 
       
-        <h1 id="高斯消元"><a href="#高斯消元" class="headerlink" title="高斯消元"></a>高斯消元</h1><h2 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h2><p>高斯消元听起来非常高大上，其实就是我们初中学的加减消元、代入消元法的程序化实现罢了。<br>考虑一个方程组<br>$$<br>\begin{cases}<br>A_{1,1} x_1+A_{1,2} x_2+A_{1,3} x_3+…+A_{1,n} x_n=C_1 \\<br>A_{2,1} x_1+A_{2,2} x_2+A_{2,3} x_3+…+A_{2,n} x_n=C_2 \\<br>…\\<br>A_{k,1} x_1+A_{k,2} x_2+A_{k,3} x_3+…+A_{k,n} x_n=C_n \\<br>\end{cases}<br>$$<br>我们要求出它的一组解，或者判定无解或无穷多组解。这就是高斯消元的基础应用。  </p>
+        <h1 id="高斯消元"><a href="#高斯消元" class="headerlink" title="高斯消元"></a>高斯消元</h1><h2 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h2><p>高斯消元听起来非常高大上，其实就是我们初中学的加减消元、代入消元法的程序化实现罢了。<br>考虑一个方程组<br>$$<br>\begin{cases}<br>A_{1,1} x_1+A_{1,2} x_2+A_{1,3} x_3+…+A_{1,n} x_n=C_1 \\\\<br>A_{2,1} x_1+A_{2,2} x_2+A_{2,3} x_3+…+A_{2,n} x_n=C_2 \\\\<br>…\\\\<br>A_{k,1} x_1+A_{k,2} x_2+A_{k,3} x_3+…+A_{k,n} x_n=C_n \\\\<br>\end{cases}<br>$$<br>我们要求出它的一组解，或者判定无解或无穷多组解。这就是高斯消元的基础应用。  </p>
 <a id="more"></a>
 <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p><strong>系数矩阵</strong>：上面的方程组中系数A组成的$n\times n$矩阵就是它的系数矩阵。<br><strong>增广矩阵</strong>：系数矩阵的最右边补上一列，表示$C_1,C_2,…,C_n$，得到的$n\times (n+1)$矩阵就成为增广矩阵。<br><strong>初等行列变换</strong>：  </p>
 <ol>
@@ -581,14 +581,14 @@
 <p><strong>变元矩阵树定理</strong>：</p>
 <ol>
 <li>对生成树T定义求其边权之积的函数$F(T)=\prod_{e\in T}w(e)$</li>
-<li>对于每一棵生成树，求其$F$函数值的和得到$H(G)$:$H(G)=\sum_{T\ is\ a\ spanning\ tree\ of\ G}F(T)$</li>
+<li>对于每一棵生成树，求其$F$函数值的和得到$H(G)$:$H(G)=\sum_{T is a spanning tree of G}F(T)$</li>
 <li>则$H(G)$等于（带边权的）基尔霍夫矩阵的任意一个n-1阶主子式的行列式的绝对值.</li>
 <li>容易发现，当边权都为1的时候，它就是普通的矩阵树定理.</li>
 </ol>
 </blockquote>
 <p>对于有向图来说，有：</p>
 <blockquote>
-<p><strong>有向图的矩阵树定理</strong><br>定义<br>$$K_{i,j}=−w(i,j)$$<br>$$K_{i,i}=∑<em>{j=1}^n w(i,j)$$<br>去掉第i行第i列，则能求出以i为根的<strong>外向树</strong>的数量（边权积）<br>同样地，定义<br>$$K</em>{i,j}=−w(i,j)$$<br>$$K_{i,i}=∑_{j=1}^n w(j,i)$$<br>则能求<strong>内向树</strong>的数量（边权积）</p>
+<p><strong>有向图的矩阵树定理</strong><br>定义<br>$$K_{i,j}=−w(i,j)$$<br>$$K_{i,i}=∑_{j=1}^n w(i,j)$$<br>去掉第i行第i列，则能求出以i为根的<strong>外向树</strong>的数量（边权积）<br>同样地，定义<br>$$K_{i,j}=−w(i,j)$$<br>$$K_{i,i}=∑_{j=1}^n w(j,i)$$<br>则能求<strong>内向树</strong>的数量（边权积）</p>
 </blockquote>
 <p>(原谅我语文学得不好没法简洁地描述上述定理qwq…)</p>
 <h2 id="证明："><a href="#证明：" class="headerlink" title="证明："></a>证明：</h2><p><del>我们采用闭眼证明法…嗯！它是对的！^_^..</del><br><del>事实上博主太菜并不会证明..</del>(留坑)</p>
