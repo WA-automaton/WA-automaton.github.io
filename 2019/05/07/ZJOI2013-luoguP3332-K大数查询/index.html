@@ -100,18 +100,18 @@
 
 
 
-  <meta name="description" content="题目描述有N个位置，M个操作。操作有两种，每次操作是：1 l r c：表示在第l个位置到第r个位置，每个位置加上一个数c2 l r c：表示询问从第l个位置到第r个位置，第C大的数是多少。注意：这个数组的每个元素都是一个栈，这里的“加上”指的是在某个位置压进去一个新数其中，$n,m\le 50000$ ,对于1操作，$|c|\le n$,对于2操作，c在long long范围内 题解：大致思路我不">
+  <meta name="description" content="奇怪的区间第k大~">
 <meta name="keywords" content="数据结构 - 树套树 - 线段树">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[ZJOI2013][luoguP3332]K大数查询">
 <meta property="og:url" content="https://wa-automaton.github.io/2019/05/07/ZJOI2013-luoguP3332-K大数查询/index.html">
 <meta property="og:site_name" content="_WA自动机的blog">
-<meta property="og:description" content="题目描述有N个位置，M个操作。操作有两种，每次操作是：1 l r c：表示在第l个位置到第r个位置，每个位置加上一个数c2 l r c：表示询问从第l个位置到第r个位置，第C大的数是多少。注意：这个数组的每个元素都是一个栈，这里的“加上”指的是在某个位置压进去一个新数其中，$n,m\le 50000$ ,对于1操作，$|c|\le n$,对于2操作，c在long long范围内 题解：大致思路我不">
+<meta property="og:description" content="奇怪的区间第k大~">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-05-07T08:36:02.208Z">
+<meta property="og:updated_time" content="2019-05-07T23:56:49.649Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="[ZJOI2013][luoguP3332]K大数查询">
-<meta name="twitter:description" content="题目描述有N个位置，M个操作。操作有两种，每次操作是：1 l r c：表示在第l个位置到第r个位置，每个位置加上一个数c2 l r c：表示询问从第l个位置到第r个位置，第C大的数是多少。注意：这个数组的每个元素都是一个栈，这里的“加上”指的是在某个位置压进去一个新数其中，$n,m\le 50000$ ,对于1操作，$|c|\le n$,对于2操作，c在long long范围内 题解：大致思路我不">
+<meta name="twitter:description" content="奇怪的区间第k大~">
 
 
 
@@ -408,12 +408,24 @@
                 
               
 
-              <time title="创建时间：2019-05-07 16:05:35 / 修改时间：16:36:02" itemprop="dateCreated datePublished" datetime="2019-05-07T16:05:35+08:00">2019-05-07</time>
+              <time title="创建时间：2019-05-07 16:05:35" itemprop="dateCreated datePublished" datetime="2019-05-07T16:05:35+08:00">2019-05-07</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-05-08 07:56:49" itemprop="dateModified" datetime="2019-05-08T07:56:49+08:00">2019-05-08</time>
               
             
           </span>
@@ -472,7 +484,8 @@
       
 
       
-        <h1 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h1><p>有N个位置，M个操作。操作有两种，每次操作是：<br>1 l r c：表示在第l个位置到第r个位置，每个位置加上一个数c<br>2 l r c：表示询问从第l个位置到第r个位置，第C大的数是多少。<br><strong>注意：这个数组的每个元素都是一个栈，这里的“加上”指的是在某个位置压进去一个新数</strong><br>其中，$n,m\le 50000$ ,对于1操作，$|c|\le n$,对于2操作，c在long long范围内</p>
+        <p>奇怪的区间第k大~<br><a id="more"></a></p>
+<h1 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h1><p>有N个位置，M个操作。操作有两种，每次操作是：<br>1 l r c：表示在第l个位置到第r个位置，每个位置加上一个数c<br>2 l r c：表示询问从第l个位置到第r个位置，第C大的数是多少。<br><strong>注意：这个数组的每个元素都是一个栈，这里的“加上”指的是在某个位置压进去一个新数</strong><br>其中，$n,m\le 50000$ ,对于1操作，$|c|\le n$,对于2操作，c在long long范围内</p>
 <h1 id="题解："><a href="#题解：" class="headerlink" title="题解："></a>题解：</h1><h2 id="大致思路"><a href="#大致思路" class="headerlink" title="大致思路"></a>大致思路</h2><p><del>我不会整体二分，所以</del>我采用了树套树。<br>这个第k小看起来很不舒服，所以我们统计一下区间中数的总数，转成第k大就好了。   </p>
 <p>回忆一下$O(n\lg^3n)$的区间第k大做法，我们用外层线段树维护位置，内层线段树维护数值。查询的时候二分得到答案。由于外面一层没有给我们什么有用的信息，所以我们只能采用近乎智障的二分…而且还不能区间修改…</p>
 <p>真的只能这样吗？</p>
