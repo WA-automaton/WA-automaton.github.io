@@ -906,6 +906,182 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wa-automaton.github.io/2019/05/07/ZJOI2013-luoguP3332-K大数查询/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="_WA自动机">
+      <meta itemprop="description" content="消えない过去、消えていく未来。">
+      <meta itemprop="image" content="/images/CNS.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="_WA自动机的blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/05/07/ZJOI2013-luoguP3332-K大数查询/" class="post-title-link" itemprop="url">[ZJOI2013][luoguP3332]K大数查询</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-07 16:05:35 / 修改时间：16:36:02" itemprop="dateCreated datePublished" datetime="2019-05-07T16:05:35+08:00">2019-05-07</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/题解/" itemprop="url" rel="index"><span itemprop="name">题解</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h1><p>有N个位置，M个操作。操作有两种，每次操作是：<br>1 l r c：表示在第l个位置到第r个位置，每个位置加上一个数c<br>2 l r c：表示询问从第l个位置到第r个位置，第C大的数是多少。<br><strong>注意：这个数组的每个元素都是一个栈，这里的“加上”指的是在某个位置压进去一个新数</strong><br>其中，$n,m\le 50000$ ,对于1操作，$|c|\le n$,对于2操作，c在long long范围内</p>
+<h1 id="题解："><a href="#题解：" class="headerlink" title="题解："></a>题解：</h1><h2 id="大致思路"><a href="#大致思路" class="headerlink" title="大致思路"></a>大致思路</h2><p><del>我不会整体二分，所以</del>我采用了树套树。<br>这个第k小看起来很不舒服，所以我们统计一下区间中数的总数，转成第k大就好了。   </p>
+<p>回忆一下$O(n\lg^3n)$的区间第k大做法，我们用外层线段树维护位置，内层线段树维护数值。查询的时候二分得到答案。由于外面一层没有给我们什么有用的信息，所以我们只能采用近乎智障的二分…而且还不能区间修改…</p>
+<p>真的只能这样吗？</p>
+<p>考虑实际上我们维护的还是一种偏序关系，位置和值的限制实际上是等价的。我们完全可以让外层的线段树维护值域，内层的线段树（平衡树）维护位置.而且，这样的话，我们自动拥有了值域线段树具有的二分性质，不用在外面套上一个傻乎乎的二分了。。<br>具体来说，我们在外层线段树（值域）递归，每一层中，使用内层线段树查询左子树中落在$[l..r]$之间的数的个数cnt。如果$k\le cnt$，进入左子树；反之，进入右子树。到叶子的时候返回值。</p>
+<p>考虑区间修改，我们只需要把平衡树换成线段树就好了——这样我们就可以打lazy标记辣！于是就做完了！</p>
+<p><del>撒花！</del></p>
+<h2 id="几个优化的小技巧："><a href="#几个优化的小技巧：" class="headerlink" title="几个优化的小技巧："></a>几个优化的小技巧：</h2><ul>
+<li>内层线段树使用动态开点，将空间降至$O(n\lg^2 n)$</li>
+<li>内层线段树可以标记永久化，减小常数。<blockquote>
+<p>“永久化的标记就是值” –zkw《统计的力量》</p>
+</blockquote>
+</li>
+<li>标记永久化：我们不再下传标记，而是改为查询时经过每个节点都累计其具有的标记，最后递归访问终止节点的时候计算这些标记造成的贡献。</li>
+</ul>
+<p><del>其实树套树也不是多慢嘛，就比整体二分慢了一倍</del><br><del>写个快读是不是就差不多了啊</del></p>
+<h1 id="代码："><a href="#代码：" class="headerlink" title="代码："></a>代码：</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdint&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxn=<span class="number">5e4</span>+<span class="number">1000</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> bl[maxn],br[maxn],cntl,cntr;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="class"><span class="keyword">class</span> <span class="title">T</span>&gt;<span class="title">inline</span> <span class="title">T</span> <span class="title">max</span>(<span class="title">T</span> <span class="title">a</span>,<span class="title">T</span> <span class="title">b</span>)&#123;</span><span class="keyword">return</span> a&lt;b?b:a;&#125;</span><br><span class="line"><span class="keyword">template</span>&lt;<span class="class"><span class="keyword">class</span> <span class="title">T</span>&gt;<span class="title">inline</span> <span class="title">T</span> <span class="title">min</span>(<span class="title">T</span> <span class="title">a</span>,<span class="title">T</span> <span class="title">b</span>)&#123;</span><span class="keyword">return</span> a&lt;b?a:b;&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> ls,rs;</span><br><span class="line">    <span class="keyword">int64_t</span> siz,tag;</span><br><span class="line">&#125;T[maxn*<span class="number">300</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> root[maxn&lt;&lt;<span class="number">3</span>],cnt;</span><br><span class="line"></span><br><span class="line"><span class="keyword">inline</span> <span class="keyword">int</span> _modify(<span class="keyword">int</span> L,<span class="keyword">int</span> R,<span class="keyword">int</span> rt,<span class="keyword">int</span> l,<span class="keyword">int</span> r) <span class="comment">// 内层线段树的插入操作</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (!rt) rt=++cnt;</span><br><span class="line">    T[rt].siz+=min(R,r)-max(L,l)+<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (L&lt;=l &amp;&amp; R&gt;=r)</span><br><span class="line">        <span class="keyword">return</span> T[rt].tag++,rt;</span><br><span class="line">    <span class="keyword">int</span> mid=(l+r)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (L&lt;=mid) T[rt].ls=_modify(L,R,T[rt].ls,l,mid);</span><br><span class="line">    <span class="keyword">if</span> (R&gt; mid) T[rt].rs=_modify(L,R,T[rt].rs,mid+<span class="number">1</span>,r);</span><br><span class="line">    <span class="keyword">return</span> rt;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">inline</span> <span class="keyword">int64_t</span> _query(<span class="keyword">int</span> L,<span class="keyword">int</span> R,<span class="keyword">int</span> rt,<span class="keyword">int</span> l,<span class="keyword">int</span> r,<span class="keyword">int64_t</span> add=<span class="number">0</span>) <span class="comment">// 内层线段树查询size</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (!rt) rt=++cnt;</span><br><span class="line">    <span class="keyword">if</span> (L&lt;=l &amp;&amp; R&gt;=r) <span class="keyword">return</span> T[rt].siz+add*(r-l+<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">int</span> mid=(l+r)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int64_t</span> tot=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (L&lt;=mid) tot+=_query(L,R,T[rt].ls,l,mid,add+T[rt].tag);</span><br><span class="line">    <span class="keyword">if</span> (R&gt; mid) tot+=_query(L,R,T[rt].rs,mid+<span class="number">1</span>,r,add+T[rt].tag);</span><br><span class="line">    <span class="keyword">return</span> tot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">modify</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> L,<span class="keyword">int</span> R,<span class="keyword">int</span> l,<span class="keyword">int</span> r,<span class="keyword">int</span> o,<span class="keyword">int</span> n)</span> <span class="comment">// 外层线段树的修改</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    root[o]=_modify(L,R,root[o],<span class="number">1</span>,n);</span><br><span class="line">    <span class="keyword">if</span> (l==r) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">int</span> mid=(l+r)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (x&lt;=mid) modify(x,L,R,l,mid,o&lt;&lt;<span class="number">1</span>,n);</span><br><span class="line">    <span class="keyword">else</span> modify(x,L,R,mid+<span class="number">1</span>,r,o&lt;&lt;<span class="number">1</span>|<span class="number">1</span>,n);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> L,<span class="keyword">int</span> R,<span class="keyword">int64_t</span> k,<span class="keyword">int</span> l,<span class="keyword">int</span> r,<span class="keyword">int</span> o,<span class="keyword">int</span> n)</span> <span class="comment">// 外层线段树的查询</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (l==r) <span class="keyword">return</span> l;</span><br><span class="line">    <span class="keyword">int</span> mid=(l+r)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int64_t</span> rnk=_query(L,R,root[o&lt;&lt;<span class="number">1</span>],<span class="number">1</span>,n,<span class="number">0</span>);</span><br><span class="line">    <span class="comment">// printf("%d %d %d %d %d\n",L,R,l,mid,rnk);</span></span><br><span class="line">    <span class="keyword">if</span> (k&lt;=rnk) <span class="keyword">return</span> query(L,R,k,l,mid,o&lt;&lt;<span class="number">1</span>,n);</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> query(L,R,k-rnk,mid+<span class="number">1</span>,r,o&lt;&lt;<span class="number">1</span>|<span class="number">1</span>,n);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int64_t</span> sumv[maxn&lt;&lt;<span class="number">2</span>],tag[maxn&lt;&lt;<span class="number">2</span>];</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ls l,mid,o&lt;&lt;1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> rs mid+1,r,o&lt;&lt;1|1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">pushdown</span><span class="params">(<span class="keyword">int</span> o,<span class="keyword">int</span> len)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    sumv[o&lt;&lt;<span class="number">1</span>]+=tag[o]*(len-(len&gt;&gt;<span class="number">1</span>));</span><br><span class="line">    sumv[o&lt;&lt;<span class="number">1</span>|<span class="number">1</span>]+=tag[o]*(len&gt;&gt;<span class="number">1</span>);</span><br><span class="line">    tag[o&lt;&lt;<span class="number">1</span>]+=tag[o];tag[o&lt;&lt;<span class="number">1</span>|<span class="number">1</span>]+=tag[o];</span><br><span class="line">    tag[o]=<span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">pushup</span><span class="params">(<span class="keyword">int</span> o)</span></span>&#123;sumv[o]=sumv[o&lt;&lt;<span class="number">1</span>]+sumv[o&lt;&lt;<span class="number">1</span>|<span class="number">1</span>];&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> L,<span class="keyword">int</span> R,<span class="keyword">int</span> c,<span class="keyword">int</span> l,<span class="keyword">int</span> r,<span class="keyword">int</span> o)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (L&lt;=l &amp;&amp; R&gt;=r) <span class="keyword">return</span> (<span class="keyword">void</span>)(sumv[o]+=c*(r-l+<span class="number">1</span>),tag[o]+=c);</span><br><span class="line">    pushdown(o,r-l+<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">int</span> mid=(l+r)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (L&lt;=mid) add(L,R,c,ls);</span><br><span class="line">    <span class="keyword">if</span> (R&gt; mid) add(L,R,c,rs);</span><br><span class="line">    pushup(o);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> int64_t <span class="title">query</span><span class="params">(<span class="keyword">int</span> L,<span class="keyword">int</span> R,<span class="keyword">int</span> l,<span class="keyword">int</span> r,<span class="keyword">int</span> o)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (L&lt;=l &amp;&amp; R&gt;=r) <span class="keyword">return</span> sumv[o];</span><br><span class="line">    pushdown(o,r-l+<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">int</span> mid=(l+r)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int64_t</span> tot=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (L&lt;=mid) tot+=query(L,R,ls);</span><br><span class="line">    <span class="keyword">if</span> (R&gt; mid) tot+=query(L,R,rs);</span><br><span class="line">    <span class="keyword">return</span> tot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> L,<span class="keyword">int</span> R,<span class="keyword">int64_t</span> k,<span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    k=query(L,R,<span class="number">1</span>,n,<span class="number">1</span>)-k+<span class="number">1</span>;</span><br><span class="line">    <span class="comment">// printf("%d\n",k);</span></span><br><span class="line">    <span class="keyword">return</span> query(L,R,k,<span class="number">1</span>,n*<span class="number">2</span>+<span class="number">2</span>,<span class="number">1</span>,n)-n<span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">modify</span><span class="params">(<span class="keyword">int</span> l,<span class="keyword">int</span> r,<span class="keyword">int</span> c,<span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    add(l,r,<span class="number">1</span>,<span class="number">1</span>,n,<span class="number">1</span>);</span><br><span class="line">    modify(c+n+<span class="number">1</span>,l,r,<span class="number">1</span>,n*<span class="number">2</span>+<span class="number">2</span>,<span class="number">1</span>,n);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// freopen("testdata3332.in","r",stdin);</span></span><br><span class="line">    <span class="keyword">int</span> n,m;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;m);</span><br><span class="line">    <span class="keyword">int64_t</span> c;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>,a,b,opt;i&lt;=m;++i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%d%d%d%lld"</span>,&amp;opt,&amp;a,&amp;b,&amp;c);</span><br><span class="line">        <span class="keyword">if</span> (opt&amp;<span class="number">1</span>) modify(a,b,c,n);</span><br><span class="line">        <span class="keyword">else</span> <span class="built_in">printf</span>(<span class="string">"%d\n"</span>,query(a,b,c,n));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://wa-automaton.github.io/2019/04/29/luogu-P4027-NOI-2007-货币兑换/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1861,185 +2037,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wa-automaton.github.io/2019/03/07/BZOJ3534/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="_WA自动机">
-      <meta itemprop="description" content="消えない过去、消えていく未来。">
-      <meta itemprop="image" content="/images/CNS.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="_WA自动机的blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/03/07/BZOJ3534/" class="post-title-link" itemprop="url">[BZOJ3534][SDOI2014]重建</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-03-07 11:56:35" itemprop="dateCreated datePublished" datetime="2019-03-07T11:56:35+08:00">2019-03-07</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-03-08 22:49:58" itemprop="dateModified" datetime="2019-03-08T22:49:58+08:00">2019-03-08</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/题解/" itemprop="url" rel="index"><span itemprop="name">题解</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a>题目大意：</h1><p>你有一个无向完全图。在一场洪水（？）以后，每条边都可能会损毁。给定每条边没有被损毁的概率，求最后剩下的边正好组成原来的图的一棵生成树的概率。</p>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2019/03/07/BZOJ3534/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2089,7 +2086,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">24</span>
+                    <span class="site-state-item-count">25</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2199,7 +2196,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">36</span>
+                      
+                    
+                    <span class="site-state-item-count">37</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
