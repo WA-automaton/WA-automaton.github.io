@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wa-automaton.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="BST： 概念： BST(Binary Search Tree)：二叉排序树或者是一棵空树，或者是具有下列性质的二叉树：  若左子树不空，则左子树上所有结点的值均小于或等于它的根结点的值； 若右子树不空，则右子树上所有结点的值均大于或等于它的根结点的值； 左、右子树也分别为二叉排序树。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="平衡树总结">
+<meta property="og:url" content="https://wa-automaton.github.io/2018/07/21/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E6%A0%91/index.html">
+<meta property="og:site_name" content="_WA自动机的blog">
+<meta property="og:description" content="BST： 概念： BST(Binary Search Tree)：二叉排序树或者是一棵空树，或者是具有下列性质的二叉树：  若左子树不空，则左子树上所有结点的值均小于或等于它的根结点的值； 若右子树不空，则右子树上所有结点的值均大于或等于它的根结点的值； 左、右子树也分别为二叉排序树。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.luogu.org/upload/pic/26185.png">
+<meta property="og:image" content="https://cdn.luogu.org/upload/pic/26186.png">
+<meta property="article:published_time" content="2018-07-21T06:04:58.000Z">
+<meta property="article:modified_time" content="2021-06-13T13:43:30.747Z">
+<meta property="article:author" content="_WA自动机">
+<meta property="article:tag" content="暴力">
+<meta property="article:tag" content="平衡树">
+<meta property="article:tag" content="可持久化平衡树">
+<meta property="article:tag" content="替罪羊树">
+<meta property="article:tag" content="splay">
+<meta property="article:tag" content="treap">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.luogu.org/upload/pic/26185.png">
+
+<link rel="canonical" href="https://wa-automaton.github.io/2018/07/21/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E6%A0%91/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>平衡树总结 | _WA自动机的blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">_WA自动机的blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">过期高中生。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wa-automaton.github.io/2018/07/21/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E6%A0%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/helloworld.jpg">
+      <meta itemprop="name" content="_WA自动机">
+      <meta itemprop="description" content="人生到处知何似，应似飞鸿踏雪泥">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="_WA自动机的blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          平衡树总结
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-07-21 14:04:58" itemprop="dateCreated datePublished" datetime="2018-07-21T14:04:58+08:00">2018-07-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-06-13 21:43:30" itemprop="dateModified" datetime="2021-06-13T21:43:30+08:00">2021-06-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/07/21/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E6%A0%91/" class="post-meta-item leancloud_visitors" data-flag-title="平衡树总结" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2018/07/21/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E6%A0%91/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/07/21/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E6%A0%91/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="bst">BST：</h2>
+<h4 id="概念">概念：</h4>
+<p>BST(Binary Search Tree)：二叉排序树或者是一棵空树，或者是具有下列性质的<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E4%BA%8C%E5%8F%89%E6%A0%91">二叉树</a>：</p>
+<ul>
+<li><p>若左子树不空，则左子树上所有结点的值均小于或等于它的<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%A0%B9%E7%BB%93">根结</a>点的值；</p></li>
+<li><p>若右子树不空，则右子树上所有结点的值均大于或等于它的根结点的值；</p></li>
+<li><p>左、右子树也分别为二叉排序树。</p>
+<span id="more"></span></li>
+</ul>
+<h4 id="应用">应用：</h4>
+<p>在BST上可以进行这样的操作：</p>
+<ol type="1">
+<li>插入 <span class="math inline">\(x\)</span>数</li>
+<li>删除 <span class="math inline">\(x\)</span> 数(若有多个相同的数，因只删除一个)</li>
+<li>查询 <span class="math inline">\(x\)</span> 数的排名(排名定义为比当前数小的数的个数 +1+1 。若有多个相同的数，因输出最小的排名)</li>
+<li>查询排名为 $ x$ 的数</li>
+<li>求 <span class="math inline">\(x\)</span> 的前驱(前驱定义为小于 <span class="math inline">\(x\)</span>，且最大的数)</li>
+<li>求 <span class="math inline">\(x\)</span> 的后继(后继定义为大于 <span class="math inline">\(x\)</span>，且最小的数)</li>
+</ol>
+<h4 id="实现">实现：</h4>
+<p><strong>(1.2操作略，s为子树大小)</strong></p>
+<p>3.求排名</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rank</span><span class="params">(<span class="keyword">int</span> x,node* o=root)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!o) <span class="keyword">return</span> INT_MAX;</span><br><span class="line">    <span class="keyword">int</span> s=o-&gt;ch[<span class="number">0</span>]?o-&gt;ch[<span class="number">0</span>]-&gt;s:<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (o-&gt;v==x) <span class="keyword">return</span> s+<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (o-&gt;v&gt;x) <span class="keyword">return</span> <span class="built_in">rank</span>(x,o-&gt;ch[<span class="number">0</span>]);</span><br><span class="line">    <span class="keyword">if</span> (o-&gt;v&lt;x) <span class="keyword">return</span> <span class="built_in">rank</span>(x,o-&gt;ch[<span class="number">1</span>])+s+o-&gt;cnt; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>4.求第k大</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">kth</span><span class="params">(<span class="keyword">int</span> k,node* o=root)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!o) <span class="keyword">return</span> INT_MIN;</span><br><span class="line">    <span class="keyword">int</span> s=o-&gt;ch[<span class="number">0</span>]?o-&gt;ch[<span class="number">0</span>]-&gt;s:<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (k&gt;s &amp;&amp; k&lt;=s+o-&gt;cnt) <span class="keyword">return</span> o-&gt;v;</span><br><span class="line">    <span class="keyword">if</span> (k&lt;=s) <span class="keyword">return</span> <span class="built_in">kth</span>(k,o-&gt;ch[<span class="number">0</span>]);</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">kth</span>(k-s-o-&gt;cnt,o-&gt;ch[<span class="number">1</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>5.求前驱</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//全局变量prec</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pre</span><span class="params">(<span class="keyword">int</span> x,node* o=root)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!o) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">if</span> (o-&gt;v&gt;prec &amp;&amp; o-&gt;v&lt;x) prec=o-&gt;v;</span><br><span class="line">    <span class="keyword">if</span> (o-&gt;v&gt;=x) <span class="built_in">pre</span>(x,o-&gt;ch[<span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">else</span> <span class="built_in">pre</span>(x,o-&gt;ch[<span class="number">1</span>]); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>6.求后继</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//全局变量succ</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">suc</span><span class="params">(<span class="keyword">int</span> x,node* o=root)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!o) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">if</span> (o-&gt;v&lt;succ &amp;&amp; o-&gt;v&gt;x) succ=o-&gt;v;</span><br><span class="line">    <span class="keyword">if</span> (o-&gt;v&lt;=x) <span class="built_in">suc</span>(x,o-&gt;ch[<span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">else</span> <span class="built_in">suc</span>(x,o-&gt;ch[<span class="number">0</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="平衡树">平衡树</h2>
+<p>随机数据下，树期望高度为<span class="math inline">\(O(\log n)\)</span>。所以，当树平衡时，所有这些操作时间都为<span class="math inline">\(O(\log n)\)</span>。但树不一定平衡：按递增或递减顺序插入元素，树就会退化成一条链。在实际应用中，树几乎不会非常平衡。所以，朴素BST表现不佳。</p>
+<p>易知，元素相同的BST可能有多种形态（朴素BST的形态与插入顺序有关）。我们我们采用一些方式来使BST的形态发生变化，但仍然为合法BST。这样树就变得平衡。</p>
+<p>常见的BST有<strong>Splay，Treap，替罪羊树</strong>，红黑树，SBT等。</p>
+<p><del>还有权值线段树、01trie、跳表等</del></p>
+<p>大多数BST基于旋转操作。</p>
+<h4 id="旋转">旋转：</h4>
+<p>令一个节点换到它的父亲位置上。为了维护BST性质，节点的子节点的位置也会跟着发生变化。</p>
+<p>原来是这样：<img src="https://cdn.luogu.org/upload/pic/26185.png" /></p>
+<p>现在是这样：</p>
+<p><img src="https://cdn.luogu.org/upload/pic/26186.png" /></p>
+<blockquote>
+<p>令x为被旋转节点，y为其父亲，则：</p>
+</blockquote>
+<p><font color=#EE0000></p>
+<ol type="1">
+<li><p>x变到原来y的位置</p></li>
+<li><p>y与x的位置关系与原来x与y的位置关系相反（如：x为y的左儿子，则后来y为x的右儿子）</p></li>
+<li><p>y非x的儿子不变，x的与x.y共线的儿子不变</p></li>
+<li><p>原来x位置的节点变成了x的与x.y不共线的儿子</p>
+<p></font></p></li>
+</ol>
+<p>代码实现大概是这个样子(建议假设x是左儿子来理解,此时k==0)：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//数组版：</span></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">rotate</span><span class="params">(<span class="keyword">int</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;<span class="comment">//把x旋转到爸爸的位置</span></span><br><span class="line">    <span class="keyword">int</span> y=f[x],z=f[y],k=(c[y][<span class="number">1</span>]==x),w=c[x][!k];<span class="comment">//k是x相对y的位置，w是x的不与x.y共线的儿子</span></span><br><span class="line">    c[z][c[z][<span class="number">1</span>]==y]=x;<span class="comment">//x变到原来y的位置</span></span><br><span class="line">    c[x][!k]=y;<span class="comment">//x为y的左儿子，则后来y为x的右儿子</span></span><br><span class="line">    c[y][k]=w;<span class="comment">//原来x位置的节点变成了x的与xy不共线的儿子</span></span><br><span class="line">    <span class="keyword">if</span>(w)f[w]=y;<span class="comment">//更新父亲，下同</span></span><br><span class="line">    f[y]=x;f[x]=z;</span><br><span class="line">    <span class="built_in">pushup</span>(y);<span class="built_in">pushup</span>(x);<span class="comment">//只有x.y的子树信息发生改变</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//指针版：</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rotate</span><span class="params">(node* &amp;o,<span class="keyword">int</span> d)</span></span></span><br><span class="line"><span class="function"></span>&#123;<span class="comment">//o为根，d=0表示右儿子左旋，d=1表示左儿子右旋。此版本未维护父亲指针。</span></span><br><span class="line">    node* k=o-&gt;ch[d^<span class="number">1</span>];</span><br><span class="line">    o-&gt;ch[d^<span class="number">1</span>]=k-&gt;ch[d];</span><br><span class="line">    k-&gt;ch[d]=o;</span><br><span class="line">    o-&gt;<span class="built_in">pushup</span>();</span><br><span class="line">    k-&gt;<span class="built_in">pushup</span>();</span><br><span class="line">    o=k;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><del>数组和指针操作明显不同是因为我学习时抄的模板不是一个人写的</del></p>
+<h3 id="treap">Treap</h3>
+<ul>
+<li>Treap=Tree+Heap</li>
+</ul>
+<p>treap的每个节点有一个随机的优先级。对于键值而言，它是BST；对于优先级而言，它是堆（即，每棵子树中，根的优先级总是最大的）。因为优先级随机，所以树期望平衡。虽然基于随机，但不容易被卡掉，跑得也很快。</p>
+<p>我采用刘汝佳式的指针写法，节点定义如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> v,cnt,rank,s;<span class="comment">//cnt是重复元素个数，rank为优先级，s为子树大小。</span></span><br><span class="line">    node *ch[<span class="number">2</span>];</span><br><span class="line">    <span class="built_in">node</span>(<span class="keyword">int</span> v):<span class="built_in">v</span>(v),<span class="built_in">cnt</span>(<span class="number">1</span>),<span class="built_in">s</span>(<span class="number">1</span>),<span class="built_in">rank</span>(<span class="built_in">rand</span>())&#123;ch[<span class="number">0</span>]=ch[<span class="number">1</span>]=<span class="number">0</span>;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">pushup</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">        s=cnt;</span><br><span class="line">        <span class="keyword">if</span> (ch[<span class="number">0</span>]) s+=ch[<span class="number">0</span>]-&gt;s;</span><br><span class="line">        <span class="keyword">if</span> (ch[<span class="number">1</span>]) s+=ch[<span class="number">1</span>]-&gt;s;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">cmp</span><span class="params">(<span class="keyword">int</span> x)</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (x==v) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        <span class="keyword">return</span> v&lt;x;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;*root;</span><br></pre></td></tr></table></figure>
+<h4 id="insert">insert</h4>
+<p>insert操作基本思想为dfs找到新节点应该在的位置并新建该节点，然后回溯判断是否违反堆性质并通过旋转维护堆性质。（注意对重复元素的处理）</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(node* &amp;o,<span class="keyword">int</span> v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!o) &#123;o=<span class="keyword">new</span> <span class="built_in">node</span>(v);<span class="keyword">return</span>;&#125;</span><br><span class="line">    <span class="keyword">int</span> d=o-&gt;<span class="built_in">cmp</span>(v);</span><br><span class="line">    <span class="keyword">if</span> (d==<span class="number">-1</span>) &#123;++o-&gt;cnt;++o-&gt;s;<span class="keyword">return</span>;&#125;</span><br><span class="line">    <span class="built_in">insert</span>(o-&gt;ch[d],v);</span><br><span class="line">    <span class="keyword">if</span> (o-&gt;ch[d]-&gt;rank&gt;o-&gt;rank) <span class="built_in">rotate</span>(o,d^<span class="number">1</span>);</span><br><span class="line">    o-&gt;<span class="built_in">pushup</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="remove">remove</h4>
+<p>当要删除的节点只有一个儿子时，删除操作很简单：直接用这个儿子代替它即可。remove操作正是基于这样的理念：将要删除的节点向下转到有至少一棵子树为空，然后删除。若有子树非空，则用非空的儿子代替它。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">remove</span><span class="params">(node* &amp;o,<span class="keyword">int</span> v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//if (!o) return;</span></span><br><span class="line">    <span class="keyword">int</span> d=o-&gt;<span class="built_in">cmp</span>(v);</span><br><span class="line">    <span class="keyword">if</span> (d==<span class="number">-1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (o-&gt;cnt&gt;<span class="number">1</span>) &#123;--o-&gt;cnt;--o-&gt;s;<span class="keyword">return</span>;&#125;</span><br><span class="line">        <span class="keyword">if</span> (!(o-&gt;ch[<span class="number">0</span>])) &#123;node* k=o;o=o-&gt;ch[<span class="number">1</span>];<span class="keyword">delete</span> k;&#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (!(o-&gt;ch[<span class="number">1</span>])) &#123;node* k=o;o=o-&gt;ch[<span class="number">0</span>];<span class="keyword">delete</span> k;&#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">int</span> d2=o-&gt;ch[<span class="number">0</span>]-&gt;rank&gt;o-&gt;ch[<span class="number">1</span>]-&gt;rank;</span><br><span class="line">            <span class="built_in">rotate</span>(o,d2);</span><br><span class="line">            <span class="built_in">remove</span>(o-&gt;ch[d2],v);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="built_in">remove</span>(o-&gt;ch[d],v);</span><br><span class="line">    <span class="keyword">if</span> (o) o-&gt;<span class="built_in">pushup</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>完整实现如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cctype&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdlib&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;ctime&gt;</span></span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> v,cnt,rank,s;</span><br><span class="line">    node *ch[<span class="number">2</span>];</span><br><span class="line">    <span class="built_in">node</span>(<span class="keyword">int</span> v):<span class="built_in">v</span>(v),<span class="built_in">cnt</span>(<span class="number">1</span>),<span class="built_in">s</span>(<span class="number">1</span>),<span class="built_in">rank</span>(<span class="built_in">rand</span>())&#123;ch[<span class="number">0</span>]=ch[<span class="number">1</span>]=<span class="number">0</span>;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">pushup</span><span class="params">()</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">        s=cnt;</span><br><span class="line">        <span class="keyword">if</span> (ch[<span class="number">0</span>]) s+=ch[<span class="number">0</span>]-&gt;s;</span><br><span class="line">        <span class="keyword">if</span> (ch[<span class="number">1</span>]) s+=ch[<span class="number">1</span>]-&gt;s;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">cmp</span><span class="params">(<span class="keyword">int</span> x)</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (x==v) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        <span class="keyword">return</span> v&lt;x;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;*root;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rotate</span><span class="params">(node* &amp;o,<span class="keyword">int</span> d)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    node* k=o-&gt;ch[d^<span class="number">1</span>];</span><br><span class="line">    o-&gt;ch[d^<span class="number">1</span>]=k-&gt;ch[d];</span><br><span class="line">    k-&gt;ch[d]=o;</span><br><span class="line">    o-&gt;<span class="built_in">pushup</span>();</span><br><span class="line">    k-&gt;<span class="built_in">pushup</span>();</span><br><span class="line">    o=k;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(node* &amp;o,<span class="keyword">int</span> v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!o) &#123;o=<span class="keyword">new</span> <span class="built_in">node</span>(v);<span class="keyword">return</span>;&#125;</span><br><span class="line">    <span class="keyword">int</span> d=o-&gt;<span class="built_in">cmp</span>(v);</span><br><span class="line">    <span class="keyword">if</span> (d==<span class="number">-1</span>) &#123;++o-&gt;cnt;++o-&gt;s;<span class="keyword">return</span>;&#125;</span><br><span class="line">    <span class="built_in">insert</span>(o-&gt;ch[d],v);</span><br><span class="line">    <span class="keyword">if</span> (o-&gt;ch[d]-&gt;rank&gt;o-&gt;rank) <span class="built_in">rotate</span>(o,d^<span class="number">1</span>);</span><br><span class="line">    o-&gt;<span class="built_in">pushup</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">remove</span><span class="params">(node* &amp;o,<span class="keyword">int</span> v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> d=o-&gt;<span class="built_in">cmp</span>(v);</span><br><span class="line">    <span class="keyword">if</span> (d==<span class="number">-1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (o-&gt;cnt&gt;<span class="number">1</span>) &#123;--o-&gt;cnt;--o-&gt;s;<span class="keyword">return</span>;&#125;</span><br><span class="line">        <span class="keyword">if</span> (!(o-&gt;ch[<span class="number">0</span>])) &#123;node* k=o;o=o-&gt;ch[<span class="number">1</span>];<span class="keyword">delete</span> k;&#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (!(o-&gt;ch[<span class="number">1</span>])) &#123;node* k=o;o=o-&gt;ch[<span class="number">0</span>];<span class="keyword">delete</span> k;&#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">int</span> d2=o-&gt;ch[<span class="number">0</span>]-&gt;rank&gt;o-&gt;ch[<span class="number">1</span>]-&gt;rank;</span><br><span class="line">            <span class="built_in">rotate</span>(o,d2);</span><br><span class="line">            <span class="built_in">remove</span>(o-&gt;ch[d2],v);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="built_in">remove</span>(o-&gt;ch[d],v);</span><br><span class="line">    <span class="keyword">if</span> (o) o-&gt;<span class="built_in">pushup</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">rank</span><span class="params">(<span class="keyword">int</span> x,node* o=root)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!o) <span class="keyword">return</span> INT_MAX;</span><br><span class="line">    <span class="keyword">int</span> s=o-&gt;ch[<span class="number">0</span>]?o-&gt;ch[<span class="number">0</span>]-&gt;s:<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (o-&gt;v==x) <span class="keyword">return</span> s+<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (o-&gt;v&gt;x) <span class="keyword">return</span> <span class="built_in">rank</span>(x,o-&gt;ch[<span class="number">0</span>]);</span><br><span class="line">    <span class="keyword">if</span> (o-&gt;v&lt;x) <span class="keyword">return</span> <span class="built_in">rank</span>(x,o-&gt;ch[<span class="number">1</span>])+s+o-&gt;cnt; </span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">kth</span><span class="params">(<span class="keyword">int</span> k,node* o=root)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!o) <span class="keyword">return</span> INT_MIN;</span><br><span class="line">    <span class="keyword">int</span> s=o-&gt;ch[<span class="number">0</span>]?o-&gt;ch[<span class="number">0</span>]-&gt;s:<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (k&gt;s &amp;&amp; k&lt;=s+o-&gt;cnt) <span class="keyword">return</span> o-&gt;v;</span><br><span class="line">    <span class="keyword">if</span> (k&lt;=s) <span class="keyword">return</span> <span class="built_in">kth</span>(k,o-&gt;ch[<span class="number">0</span>]);</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">kth</span>(k-s-o-&gt;cnt,o-&gt;ch[<span class="number">1</span>]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> prec,succ;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">pre</span><span class="params">(<span class="keyword">int</span> x,node* o=root)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!o) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">if</span> (o-&gt;v&gt;prec &amp;&amp; o-&gt;v&lt;x) prec=o-&gt;v;</span><br><span class="line">    <span class="keyword">if</span> (o-&gt;v&gt;=x) <span class="built_in">pre</span>(x,o-&gt;ch[<span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">else</span> <span class="built_in">pre</span>(x,o-&gt;ch[<span class="number">1</span>]); </span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">suc</span><span class="params">(<span class="keyword">int</span> x,node* o=root)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!o) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">if</span> (o-&gt;v&lt;succ &amp;&amp; o-&gt;v&gt;x) succ=o-&gt;v;</span><br><span class="line">    <span class="keyword">if</span> (o-&gt;v&lt;=x) <span class="built_in">suc</span>(x,o-&gt;ch[<span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">else</span> <span class="built_in">suc</span>(x,o-&gt;ch[<span class="number">0</span>]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//freopen(&quot;phs.in&quot;,&quot;r&quot;,stdin);</span></span><br><span class="line">    <span class="comment">//freopen(&quot;phs.out&quot;,&quot;w&quot;,stdout);</span></span><br><span class="line">    <span class="built_in">srand</span>(<span class="built_in">time</span>(<span class="number">0</span>));</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="keyword">int</span> opt,x;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;n);</span><br><span class="line">    <span class="keyword">while</span> (n--)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>,&amp;opt,&amp;x);</span><br><span class="line">        <span class="built_in"><span class="keyword">switch</span></span> (opt)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">1</span>:<span class="built_in">insert</span>(root,x);<span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">2</span>:<span class="built_in">remove</span>(root,x);<span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">3</span>:<span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>,<span class="built_in">rank</span>(x));<span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">4</span>:<span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>,<span class="built_in">kth</span>(x));<span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">5</span>:prec=INT_MIN;<span class="built_in">pre</span>(x);<span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>,prec);<span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">6</span>:succ=INT_MAX;<span class="built_in">suc</span>(x);<span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>,succ);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">fclose</span>(stdin);</span><br><span class="line">    <span class="built_in">fclose</span>(stdout);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="splay">Splay</h3>
+<p>Splay最核心的操作为splay操作。它把一个节点旋转到指定位置。<del>因为指针Splay太麻烦会调死人</del>，我们采用数组实现。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9A%B4%E5%8A%9B/" rel="tag"># 暴力</a>
+              <a href="/tags/%E5%B9%B3%E8%A1%A1%E6%A0%91/" rel="tag"># 平衡树</a>
+              <a href="/tags/%E5%8F%AF%E6%8C%81%E4%B9%85%E5%8C%96%E5%B9%B3%E8%A1%A1%E6%A0%91/" rel="tag"># 可持久化平衡树</a>
+              <a href="/tags/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E6%A0%91/" rel="tag"># 替罪羊树</a>
+              <a href="/tags/splay/" rel="tag"># splay</a>
+              <a href="/tags/treap/" rel="tag"># treap</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/07/21/%E5%8F%AF%E6%8C%81%E4%B9%85%E5%8C%96%E5%B9%B3%E8%A1%A1%E6%A0%91/" rel="prev" title="可持久化平衡树">
+      <i class="fa fa-chevron-left"></i> 可持久化平衡树
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/07/23/LCT/" rel="next" title="LCT">
+      LCT <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#bst"><span class="nav-number">1.</span> <span class="nav-text">BST：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">1.0.1.</span> <span class="nav-text">概念：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8"><span class="nav-number">1.0.2.</span> <span class="nav-text">应用：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.0.3.</span> <span class="nav-text">实现：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B3%E8%A1%A1%E6%A0%91"><span class="nav-number">2.</span> <span class="nav-text">平衡树</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%8B%E8%BD%AC"><span class="nav-number">2.0.1.</span> <span class="nav-text">旋转：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#treap"><span class="nav-number">2.1.</span> <span class="nav-text">Treap</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#insert"><span class="nav-number">2.1.1.</span> <span class="nav-text">insert</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#remove"><span class="nav-number">2.1.2.</span> <span class="nav-text">remove</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#splay"><span class="nav-number">2.2.</span> <span class="nav-text">Splay</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="_WA自动机"
+      src="/images/helloworld.jpg">
+  <p class="site-author-name" itemprop="name">_WA自动机</p>
+  <div class="site-description" itemprop="description">人生到处知何似，应似飞鸿踏雪泥</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">_WA自动机</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '51tNgbRxn9e1AYr9AxHOJf1b-gzGzoHsz',
+      appKey     : '8QWxicTVALJ91TRRPtnsYpsl',
+      placeholder: "来都来了，说点什么再走呗~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

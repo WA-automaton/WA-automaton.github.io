@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wa-automaton.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="树上差分+线段树合并">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[luogu P1600][NOIP 2016]天天爱跑步">
+<meta property="og:url" content="https://wa-automaton.github.io/2019/05/09/luogu-P1600-NOIP-2016-%E5%A4%A9%E5%A4%A9%E7%88%B1%E8%B7%91%E6%AD%A5/index.html">
+<meta property="og:site_name" content="_WA自动机的blog">
+<meta property="og:description" content="树上差分+线段树合并">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-05-09T14:34:07.000Z">
+<meta property="article:modified_time" content="2019-05-10T07:17:00.605Z">
+<meta property="article:author" content="_WA自动机">
+<meta property="article:tag" content="数据结构 - 线段树合并 - 树上差分">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://wa-automaton.github.io/2019/05/09/luogu-P1600-NOIP-2016-%E5%A4%A9%E5%A4%A9%E7%88%B1%E8%B7%91%E6%AD%A5/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>[luogu P1600][NOIP 2016]天天爱跑步 | _WA自动机的blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">_WA自动机的blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">过期高中生。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wa-automaton.github.io/2019/05/09/luogu-P1600-NOIP-2016-%E5%A4%A9%E5%A4%A9%E7%88%B1%E8%B7%91%E6%AD%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/helloworld.jpg">
+      <meta itemprop="name" content="_WA自动机">
+      <meta itemprop="description" content="人生到处知何似，应似飞鸿踏雪泥">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="_WA自动机的blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [luogu P1600][NOIP 2016]天天爱跑步
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-09 22:34:07" itemprop="dateCreated datePublished" datetime="2019-05-09T22:34:07+08:00">2019-05-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-05-10 15:17:00" itemprop="dateModified" datetime="2019-05-10T15:17:00+08:00">2019-05-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%A2%98%E8%A7%A3-NOIP/" itemprop="url" rel="index"><span itemprop="name">题解 - NOIP</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2019/05/09/luogu-P1600-NOIP-2016-%E5%A4%A9%E5%A4%A9%E7%88%B1%E8%B7%91%E6%AD%A5/" class="post-meta-item leancloud_visitors" data-flag-title="[luogu P1600][NOIP 2016]天天爱跑步" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2019/05/09/luogu-P1600-NOIP-2016-%E5%A4%A9%E5%A4%A9%E7%88%B1%E8%B7%91%E6%AD%A5/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/05/09/luogu-P1600-NOIP-2016-%E5%A4%A9%E5%A4%A9%E7%88%B1%E8%B7%91%E6%AD%A5/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>树上差分+线段树合并 <span id="more"></span> # 题目大意 小C同学认为跑步非常有趣，于是决定制作一款叫做《天天爱跑步》的游戏。《天天爱跑步》是一个养成类游戏，需要玩家每天按时上线，完成打卡任务。</p>
+<p>这个游戏的地图可以看作一棵包含<span class="math inline">\(n\)</span>个结点和<span class="math inline">\(n-1\)</span>条边的树，每条边连接两个结点，且任意两个结点存在一条路径互相可达。树上结点编号为从<span class="math inline">\(1\)</span>到<span class="math inline">\(n\)</span>的连续正整数。</p>
+<p>现在有<span class="math inline">\(m\)</span>个玩家，第<span class="math inline">\(i\)</span>个玩家的起点为<span class="math inline">\(S_i\)</span>，终点为<span class="math inline">\(T_i\)</span>。每天打卡任务开始时，所有玩家在第<span class="math inline">\(0\)</span>秒同时从自己的起点出发，以每秒跑一条边的速度，不间断地沿着最短路径向着自己的终点跑去，跑到终点后该玩家就算完成了打卡任务。（由于地图是一棵树，所以每个人的路径是唯一的）</p>
+<p>小C想知道游戏的活跃度，所以在每个结点上都放置了一个观察员。在结点<span class="math inline">\(j\)</span>的观察员会选择在第<span class="math inline">\(W_j\)</span>秒观察玩家，一个玩家能被这个观察员观察到当且仅当该玩家在第<span class="math inline">\(W_j\)</span>秒也正好到达了结点<span class="math inline">\(j\)</span>。小C想知道每个观察员会观察到多少人？</p>
+<p>注意：我们认为一个玩家到达自己的终点后该玩家就会结束游戏，他不能等待一段时间后再被观察员观察到。即对于把结点<span class="math inline">\(j\)</span>作为终点的玩家：若他在第<span class="math inline">\(W_j\)</span>秒前到达终点，则在结点<span class="math inline">\(j\)</span>的观察员不能观察到该玩家；若他正好在第<span class="math inline">\(W_j\)</span>秒到达终点，则在结点<span class="math inline">\(j\)</span>的观察员可以观察到这个玩家。<br />
+其中，<span class="math inline">\(n,m\le 3\times 10^5\)</span></p>
+<h1 id="题解">题解：</h1>
+<p>每一个结点都有观察者...<br />
+这道题主要的难点在于推贡献...我做这题的时候将人的行走看做了修改，一直拘泥于如何快速维护树上路径加等差数列...这样显然不太珂做...<br />
+我们考虑什么样的路径会对一个点<span class="math inline">\(w\)</span>的观察者有贡献： * 路径的两个端点（记为<span class="math inline">\(u,v\)</span>）至少有一个在<span class="math inline">\(w\)</span>的子树内 * <span class="math inline">\(\text{lca}(u,v)\)</span>不在w的子树内</p>
+<ul>
+<li>对于u在w子树内的情况： <span class="math display">\[\text{depth}(u)-\text{depth}(w)=\mathcal{W}\]</span></li>
+<li>对于v在w子树内的情况： <span class="math display">\[\text{depth}(u)-2*\text{depth}(\text{lca}(u,v))+\text{depth}(w)=\mathcal{W}\]</span> 所以，我们有三个限制条件...不太好做... 对于u,v限制条件不同的情况，我们显然可以分类讨论，这不是啥问题.. 这里最麻烦的一点是<span class="math inline">\(\text{lca}(u,v)\)</span>不在w的子树内..似乎不好维护呢~</li>
+</ul>
+<p>但是我们还有一个有力武器！树上差分！ 我们把<span class="math inline">\(u\rightarrow v\)</span>的路径拆分成 <span class="math inline">\(u-&gt;lca\ lca-&gt;v\)</span>，进一步差分成<span class="math inline">\(u\rightarrow root ,v\rightarrow root,root\rightarrow lca,root\rightarrow fa[lca]\)</span>，其中前两条路径权值为+1，后两条路径权值为-1.这样，我们就摆脱了lca的限制，一个节点的整个子树都可以对它产生贡献，就可以直接树上统计了！</p>
+<p>现在，每一个节点的答案由它的子树得到，每个子树相互独立并且可合并...线段树合并！再分类讨论u和v的贡献，就做完啦！ # 代码 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> std::vector;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxn=<span class="number">3e5</span>+<span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">vector&lt;<span class="keyword">int</span>&gt; G[maxn];</span><br><span class="line"><span class="keyword">int</span> count[maxn],w[maxn];</span><br><span class="line"><span class="keyword">int</span> s[maxn],t[maxn];</span><br><span class="line"><span class="keyword">int</span> depth[maxn],fa[maxn],siz[maxn];</span><br><span class="line"><span class="keyword">int</span> top[maxn],son[maxn];</span><br><span class="line"><span class="keyword">int</span> ans[maxn],tag[maxn],tot;</span><br><span class="line"><span class="keyword">int</span> root[maxn];</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> ls,rs,siz;</span><br><span class="line">&#125;T[maxn*<span class="number">50</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="class"><span class="keyword">class</span> <span class="title">T</span>&gt;</span><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">swap</span><span class="params">(T&amp; a,T&amp; b)</span></span>&#123;a^=b^=a^=b;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">Newnode</span><span class="params">()</span></span>&#123;T[++tot].ls=<span class="number">0</span>;T[tot].rs=<span class="number">0</span>;T[tot].siz=<span class="number">0</span>;<span class="keyword">return</span> tot;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">insert</span><span class="params">(<span class="keyword">int</span> pos,<span class="keyword">int</span> rt,<span class="keyword">int</span> l,<span class="keyword">int</span> r,<span class="keyword">int</span> val=<span class="number">1</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!rt) rt=<span class="built_in">Newnode</span>();</span><br><span class="line">    T[rt].siz+=val;</span><br><span class="line">    <span class="keyword">if</span> (l==r) <span class="keyword">return</span> rt;</span><br><span class="line">    <span class="keyword">int</span> mid=(l+r)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (pos&lt;=mid) T[rt].ls=<span class="built_in">insert</span>(pos,T[rt].ls,l,mid,val);</span><br><span class="line">    <span class="keyword">else</span> T[rt].rs=<span class="built_in">insert</span>(pos,T[rt].rs,mid+<span class="number">1</span>,r,val);</span><br><span class="line">    <span class="keyword">return</span> rt;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">merge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!x || !y) <span class="keyword">return</span> x+y;</span><br><span class="line">    T[x].siz+=T[y].siz;</span><br><span class="line">    T[x].ls=<span class="built_in">merge</span>(T[x].ls,T[y].ls);</span><br><span class="line">    T[x].rs=<span class="built_in">merge</span>(T[x].rs,T[y].rs);</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> pos,<span class="keyword">int</span> l,<span class="keyword">int</span> r,<span class="keyword">int</span> rt)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!rt) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (l==r) <span class="keyword">return</span> T[rt].siz;</span><br><span class="line">    <span class="keyword">int</span> mid=(l+r)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (pos&lt;=mid) <span class="keyword">return</span> <span class="built_in">query</span>(pos,l,mid,T[rt].ls);</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> <span class="built_in">query</span>(pos,mid+<span class="number">1</span>,r,T[rt].rs);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> u,<span class="keyword">int</span> ff,<span class="keyword">int</span> dep)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    depth[u]=dep;</span><br><span class="line">    fa[u]=ff;siz[u]=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> maxs=<span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> v:G[u])</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (v==ff) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="built_in">dfs</span>(v,u,dep+<span class="number">1</span>);</span><br><span class="line">        siz[u]+=siz[v];</span><br><span class="line">        <span class="keyword">if</span> (siz[v]&gt;=maxs) maxs=siz[v],son[u]=v;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> u,<span class="keyword">int</span> topf)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    top[u]=topf;</span><br><span class="line">    <span class="keyword">if</span> (!son[u]) <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">dfs</span>(son[u],topf);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> v:G[u]) </span><br><span class="line">        <span class="keyword">if</span> (v!=fa[u] &amp;&amp; v!=son[u]) <span class="built_in">dfs</span>(v,v);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">LCA</span><span class="params">(<span class="keyword">int</span> u,<span class="keyword">int</span> v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (top[u]!=top[v])</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (depth[top[u]]&lt;depth[top[v]]) <span class="built_in">swap</span>(u,v);</span><br><span class="line">        u=fa[top[u]];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> depth[u]&gt;depth[v]?v:u;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">dfs_cal1</span><span class="params">(<span class="keyword">int</span> u,<span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> v:G[u])</span><br><span class="line">        <span class="keyword">if</span> (v!=fa[u]) <span class="built_in">dfs_cal1</span>(v,n),root[u]=<span class="built_in">merge</span>(root[u],root[v]);</span><br><span class="line">    ans[u]+=<span class="built_in">query</span>(depth[u]+w[u],<span class="number">1</span>,n,root[u]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">dfs_cal2</span><span class="params">(<span class="keyword">int</span> u,<span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> v:G[u])</span><br><span class="line">        <span class="keyword">if</span> (v!=fa[u]) <span class="built_in">dfs_cal2</span>(v,n),root[u]=<span class="built_in">merge</span>(root[u],root[v]);</span><br><span class="line">    ans[u]+=<span class="built_in">query</span>(w[u]-depth[u],-n*<span class="number">2</span>,n,root[u]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n,m;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>,&amp;n,&amp;m);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>,u,v;i&lt;n;++i)</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>,&amp;u,&amp;v),G[u].<span class="built_in">push_back</span>(v),G[v].<span class="built_in">push_back</span>(u);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i)</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,w+i);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=m;++i)</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>,s+i,t+i);</span><br><span class="line">    <span class="built_in">dfs</span>(<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>);<span class="built_in">dfs</span>(<span class="number">1</span>,<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">int</span> lca[maxn];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>,u,v;i&lt;=m;++i)</span><br><span class="line">    &#123;</span><br><span class="line">        u=s[i];v=t[i];</span><br><span class="line">        lca[i]=<span class="built_in">LCA</span>(u,v);</span><br><span class="line">        root[u]=<span class="built_in">insert</span>(depth[u],root[u],<span class="number">1</span>,n&lt;&lt;<span class="number">1</span>);</span><br><span class="line">        root[fa[lca[i]]]=<span class="built_in">insert</span>(depth[u],root[fa[lca[i]]],<span class="number">1</span>,n&lt;&lt;<span class="number">1</span>,<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">dfs_cal1</span>(<span class="number">1</span>,n&lt;&lt;<span class="number">1</span>);</span><br><span class="line">    tot=<span class="number">0</span>;<span class="built_in">memset</span>(root,<span class="number">0</span>,<span class="built_in"><span class="keyword">sizeof</span></span>(root));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>,u,v;i&lt;=m;++i)</span><br><span class="line">    &#123;</span><br><span class="line">        u=s[i],v=t[i];</span><br><span class="line">        root[v]=<span class="built_in">insert</span>(depth[u]<span class="number">-2</span>*depth[lca[i]],root[v],<span class="number">-2</span>*n,n);</span><br><span class="line">        root[lca[i]]=<span class="built_in">insert</span>(depth[u]<span class="number">-2</span>*depth[lca[i]],root[lca[i]],<span class="number">-2</span>*n,n,<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">dfs_cal2</span>(<span class="number">1</span>,n);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i)</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>,ans[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E7%BA%BF%E6%AE%B5%E6%A0%91%E5%90%88%E5%B9%B6-%E6%A0%91%E4%B8%8A%E5%B7%AE%E5%88%86/" rel="tag"># 数据结构 - 线段树合并 - 树上差分</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/05/07/ZJOI2013-luoguP3332-K%E5%A4%A7%E6%95%B0%E6%9F%A5%E8%AF%A2/" rel="prev" title="[ZJOI2013][luoguP3332]K大数查询">
+      <i class="fa fa-chevron-left"></i> [ZJOI2013][luoguP3332]K大数查询
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/06/20/%E4%B8%80%E4%BA%9B%E5%A5%87%E6%80%AA%E7%9A%84%E8%8E%AB%E9%98%9F%E6%8A%80%E5%B7%A7/" rel="next" title="一些奇怪的莫队技巧">
+      一些奇怪的莫队技巧 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text">题解：</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="_WA自动机"
+      src="/images/helloworld.jpg">
+  <p class="site-author-name" itemprop="name">_WA自动机</p>
+  <div class="site-description" itemprop="description">人生到处知何似，应似飞鸿踏雪泥</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">_WA自动机</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '51tNgbRxn9e1AYr9AxHOJf1b-gzGzoHsz',
+      appKey     : '8QWxicTVALJ91TRRPtnsYpsl',
+      placeholder: "来都来了，说点什么再走呗~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

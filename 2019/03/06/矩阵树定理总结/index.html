@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wa-automaton.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="高斯消元 引入 高斯消元听起来非常高大上，其实就是我们初中学的加减消元、代入消元法的程序化实现罢了。 考虑一个方程组 \[ \begin{cases} A_{1,1} x_1+A_{1,2} x_2+A_{1,3} x_3+...+A_{1,n} x_n&#x3D;C_1 \\\\ A_{2,1} x_1+A_{2,2} x_2+A_{2,3} x_3+...+A_{2,n} x_n&#x3D;C_2 \">
+<meta property="og:type" content="article">
+<meta property="og:title" content="高斯消元-行列式-矩阵树定理学习笔记">
+<meta property="og:url" content="https://wa-automaton.github.io/2019/03/06/%E7%9F%A9%E9%98%B5%E6%A0%91%E5%AE%9A%E7%90%86%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="_WA自动机的blog">
+<meta property="og:description" content="高斯消元 引入 高斯消元听起来非常高大上，其实就是我们初中学的加减消元、代入消元法的程序化实现罢了。 考虑一个方程组 \[ \begin{cases} A_{1,1} x_1+A_{1,2} x_2+A_{1,3} x_3+...+A_{1,n} x_n&#x3D;C_1 \\\\ A_{2,1} x_1+A_{2,2} x_2+A_{2,3} x_3+...+A_{2,n} x_n&#x3D;C_2 \">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://wa-automaton.github.io/2019/03/06/%E7%9F%A9%E9%98%B5%E6%A0%91%E5%AE%9A%E7%90%86%E6%80%BB%E7%BB%93/Matrix1.jpg">
+<meta property="article:published_time" content="2019-03-06T08:29:37.000Z">
+<meta property="article:modified_time" content="2021-06-13T13:43:30.746Z">
+<meta property="article:author" content="_WA自动机">
+<meta property="article:tag" content="矩阵树定理">
+<meta property="article:tag" content="数学">
+<meta property="article:tag" content="计数">
+<meta property="article:tag" content="线性代数">
+<meta property="article:tag" content="高斯消元">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://wa-automaton.github.io/2019/03/06/%E7%9F%A9%E9%98%B5%E6%A0%91%E5%AE%9A%E7%90%86%E6%80%BB%E7%BB%93/Matrix1.jpg">
+
+<link rel="canonical" href="https://wa-automaton.github.io/2019/03/06/%E7%9F%A9%E9%98%B5%E6%A0%91%E5%AE%9A%E7%90%86%E6%80%BB%E7%BB%93/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>高斯消元-行列式-矩阵树定理学习笔记 | _WA自动机的blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">_WA自动机的blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">过期高中生。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wa-automaton.github.io/2019/03/06/%E7%9F%A9%E9%98%B5%E6%A0%91%E5%AE%9A%E7%90%86%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/helloworld.jpg">
+      <meta itemprop="name" content="_WA自动机">
+      <meta itemprop="description" content="人生到处知何似，应似飞鸿踏雪泥">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="_WA自动机的blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          高斯消元-行列式-矩阵树定理学习笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-03-06 16:29:37" itemprop="dateCreated datePublished" datetime="2019-03-06T16:29:37+08:00">2019-03-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-06-13 21:43:30" itemprop="dateModified" datetime="2021-06-13T21:43:30+08:00">2021-06-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2019/03/06/%E7%9F%A9%E9%98%B5%E6%A0%91%E5%AE%9A%E7%90%86%E6%80%BB%E7%BB%93/" class="post-meta-item leancloud_visitors" data-flag-title="高斯消元-行列式-矩阵树定理学习笔记" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2019/03/06/%E7%9F%A9%E9%98%B5%E6%A0%91%E5%AE%9A%E7%90%86%E6%80%BB%E7%BB%93/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/03/06/%E7%9F%A9%E9%98%B5%E6%A0%91%E5%AE%9A%E7%90%86%E6%80%BB%E7%BB%93/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="高斯消元">高斯消元</h1>
+<h2 id="引入">引入</h2>
+<p>高斯消元听起来非常高大上，其实就是我们初中学的加减消元、代入消元法的程序化实现罢了。<br />
+考虑一个方程组 <span class="math display">\[
+\begin{cases}
+A_{1,1} x_1+A_{1,2} x_2+A_{1,3} x_3+...+A_{1,n} x_n=C_1 \\\\
+A_{2,1} x_1+A_{2,2} x_2+A_{2,3} x_3+...+A_{2,n} x_n=C_2 \\\\
+...\\\\
+A_{k,1} x_1+A_{k,2} x_2+A_{k,3} x_3+...+A_{k,n} x_n=C_n \\\\
+\end{cases}
+\]</span> 我们要求出它的一组解，或者判定无解或无穷多组解。这就是高斯消元的基础应用。</p>
+<span id="more"></span>
+<h2 id="概念">概念</h2>
+<p><strong>系数矩阵</strong>：上面的方程组中系数A组成的<span class="math inline">\(n\times n\)</span>矩阵就是它的系数矩阵。<br />
+<strong>增广矩阵</strong>：系数矩阵的最右边补上一列，表示<span class="math inline">\(C_1,C_2,...,C_n\)</span>，得到的<span class="math inline">\(n\times (n+1)\)</span>矩阵就成为增广矩阵。<br />
+<strong>初等行列变换</strong>：<br />
+1. 以一个非零的数乘矩阵的某一行（列）<br />
+2. 把矩阵的某一行（列）的c倍加到另一行（列），这里c是任意数 3. 互换矩阵中两行（列）的位置</p>
+<p><strong>阶梯型矩阵</strong>：一个矩阵成为阶梯型矩阵，需满足两个条件：<br />
+1. 如果它既有零行，又有非零行，则零行在下，非零行在上。<br />
+2. 如果它有非零行，则每个非零行的第一个非零元素所在列号自上而下严格单调上升。<br />
+<strong>转置</strong>：把一个矩阵的行变成列，列变成行，得到的矩阵就是原矩阵的转置。记为<span class="math inline">\(A^T\)</span><br />
+如图所示，这就是一个阶梯型矩阵<br />
+<img src="Matrix1.jpg" alt="示例1" /></p>
+<p><strong>三角矩阵</strong>：三角矩阵分上三角矩阵和下三角矩阵两种。上三角矩阵的对角线左下方的系数全部为零，下三角矩阵的对角线右上方的系数全部为零。</p>
+<h2 id="算法流程">算法流程</h2>
+<p>它的基本思想是通过初等行变换，把增广矩阵消成上三角矩阵，此时最后一个非零行必然是<span class="math inline">\(ax=b\)</span>的形式。所以我们已经得到了一个未知数的值。把这个值代回上面的所有方程中，则它的上面一行也变成了<span class="math inline">\(ax=b\)</span>的形式...重复下去，我们就可以得到所有未知数的值了。^_^ ## 代码 （SDOI2006 线性方程组） 改编自 ComeIntoPower，在此对他表示谢意QwQ <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> std::fabs;</span><br><span class="line"><span class="keyword">using</span> std::swap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> maxn=<span class="number">1e3</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">double</span> eps=<span class="number">1e-9</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">Gauss_Elimination</span><span class="params">(<span class="keyword">double</span> (*A)[maxn],<span class="keyword">double</span>* f,<span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>,c=<span class="number">1</span>,j;i&lt;=n;++i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">for</span> (j=c;j&lt;=n &amp;&amp; <span class="built_in">fabs</span>(A[j][i])&lt;eps;++j);</span><br><span class="line">        <span class="keyword">if</span> (j==n+<span class="number">1</span>) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> k=<span class="number">1</span>;k&lt;=n+<span class="number">1</span>;++k) <span class="built_in">swap</span>(A[c][k],A[j][k]);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=c+<span class="number">1</span>;j&lt;=n;++j)</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">fabs</span>(A[j][i])&gt;eps) </span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">double</span> t=A[j][i]/A[c][i];</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> k=i;k&lt;=n+<span class="number">1</span>;++k)</span><br><span class="line">                    A[j][k]-=t*A[c][k];</span><br><span class="line">            &#125;</span><br><span class="line">        ++c;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">bool</span> NoAnswer=<span class="literal">false</span>,InfAnswer=<span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=n;i;--i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">bool</span> NoVariables=<span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=i;j&lt;=n;++j)</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">fabs</span>(A[i][j])&gt;eps) NoVariables=<span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">if</span> (NoVariables)</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">fabs</span>(A[i][n+<span class="number">1</span>])&gt;eps) NoAnswer=<span class="literal">true</span>;<span class="comment">// 0=C,C!=0,无解</span></span><br><span class="line">            <span class="keyword">else</span> InfAnswer=<span class="literal">true</span>;<span class="comment">// 0=0,无穷多组解</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j=i+<span class="number">1</span>;j&lt;=n;++j) A[i][n+<span class="number">1</span>]-=A[i][j]*f[j];</span><br><span class="line">            f[i]=A[i][n+<span class="number">1</span>]/A[i][i];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (NoAnswer) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">return</span> !InfAnswer; <span class="comment">//无穷多解返回0，有唯一解返回1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">double</span> A[maxn][maxn],f[maxn];</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;n);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i)</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">1</span>;j&lt;=n+<span class="number">1</span>;++j)</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">&quot;%lf&quot;</span>,&amp;A[i][j]);</span><br><span class="line">    <span class="keyword">int</span> result=<span class="built_in">Gauss_Elimination</span>(A,f,n);</span><br><span class="line">    <span class="keyword">if</span> (result^<span class="number">1</span>) <span class="keyword">return</span> <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>,result)&amp;<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i) <span class="built_in">printf</span>(<span class="string">&quot;x%d=%.2lf\n&quot;</span>,i,f[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> ## 解释： 1. * Q: 咋判断无解和无穷多组解鸭？ * A:当消元完成后，回代之前时，方程组若出现除了常数项之外全零的行，则一定无解或无穷多组解。（常数项为0是无穷多组解，非零则无解） 2. * Q：代码中那个变量c的作用是啥呀？为啥不能用i代替呢？ * A：因为如果把c换成i，当存在一个自由元的时候，可能没法消出来全零行，而是直接跳过了本该消成全零行的那一行，将其放在了原来的位置，导致判断无穷解和无解的时候出偏差。（详见洛谷本题讨论的“Hack+1”篇目).</p>
+<h1 id="行列式">行列式</h1>
+<h2 id="概念-1">概念：</h2>
+<p><strong>主子式</strong>：对于一个n阶矩阵A，选取它的任意i行，将行号记为<span class="math inline">\(T[1..i]\)</span>，并同时选取第<span class="math inline">\(T[1..n]\)</span>列，得到的新矩阵即为原矩阵的一个i阶主子式。 新矩阵的行列式也可称为<span class="math inline">\(|A|\)</span>的一个i阶主子式。</p>
+<p><strong>行列式</strong>：行列式是一个标量。对一个矩阵A来说，它的行列式（记作<span class="math inline">\(|A|\)</span>)的定义是 <span class="math display">\[|A|=\sum_P(-1)^{\delta(P)}\prod_{k=1}^n A_{i,P_k} \]</span> 其中，<span class="math inline">\(P\)</span>取遍<span class="math inline">\(1..n\)</span>的所有排列，<span class="math inline">\(\delta(P)\)</span>为P的逆序对数。这个柿子很好理解：就是从每行每列各选一个数，一共n个数， 行列式有以下性质：<br />
+1. <span class="math inline">\(|A|=|A^T|\)</span> (由定义，比较显然，在此不证) 2. 将一个矩阵的两行互换，行列式变号。<br />
+为了证明这个定理，我们需要首先证明一个引理： * 引理：一个排列的两项交换，逆序对改变量为奇数。 * 引理证明：不妨设<span class="math inline">\(a&lt;b\)</span>.这样的交换对位置在a前面和在b后面的数没有影响，所以只需要考虑<span class="math inline">\(a,b\)</span>之间的这个子区间。设交换的两项为<span class="math inline">\(a,b.\)</span>把位置在<span class="math inline">\(a.b\)</span>之间的数分类：设属于<span class="math inline">\((-\infty ,a)\)</span>的数量为<span class="math inline">\(x\)</span>,属于<span class="math inline">\((a,b)\)</span>的数量为<span class="math inline">\(y\)</span>,属于<span class="math inline">\((b,+\infty )\)</span>的数量为<span class="math inline">\(z\)</span>。区间里交换以前的逆序对数为<span class="math inline">\(x+z\)</span>,交换后为<span class="math inline">\((x+y)+(y+z)+1\)</span>，差值为<span class="math inline">\(2y+1\)</span>,是奇数。</p>
+<p>现在，证明这个定理就十分容易了。 * 证明：交换矩阵的两行，相当于交换<span class="math inline">\(P\)</span>的两项。逆序对改变量为奇数，所以行列式变号。</p>
+<ul>
+<li><strong>推论2.1</strong>：有两行相同的矩阵，行列式为<span class="math inline">\(0\)</span>。
+<ul>
+<li>证明：交换这两行，行列式变号且值不变...</li>
+</ul></li>
+</ul>
+<ol start="3" type="1">
+<li>将某一行乘上<span class="math inline">\(k\)</span>，行列式乘上<span class="math inline">\(k\)</span>.
+<ul>
+<li>证明：你在这一行选出的每个数，都乘上了一个<span class="math inline">\(k\)</span>。提取公因数即得。</li>
+</ul></li>
+<li>两个矩阵如果只有一行不同，则它们的行列式和等于将不同的行相加得到的新矩阵的行列式。
+<ul>
+<li>证明：从定义下手。挺显然的吧qwq.</li>
+</ul></li>
+</ol>
+<ul>
+<li><strong>推论4.1</strong>：将一行乘上<span class="math inline">\(k\)</span>的值加到另一行上，行列式不变。
+<ul>
+<li>证明：设被加的行为<span class="math inline">\(x\)</span>，乘上<span class="math inline">\(k\)</span>加到<span class="math inline">\(A\)</span>上的为<span class="math inline">\(y\)</span>。把这个新矩阵拆成两个矩阵<span class="math inline">\(A,B\)</span>。其中<span class="math inline">\(A\)</span>是原矩阵，<span class="math inline">\(B\)</span>的<span class="math inline">\(x\)</span>行改为<span class="math inline">\(y*k\)</span>：则由性质2和3，<span class="math inline">\(B\)</span>的行列式为<span class="math inline">\(0\)</span>。又由性质4，新矩阵的行列式为<span class="math inline">\(|A|+|B|\)</span>,和原来相等</li>
+<li><strong>有了这个推论和性质2，我们就可以做高斯消元啦！</strong></li>
+</ul></li>
+</ul>
+<ol type="1">
+<li>每行每列和均为0的矩阵，行列式为0.
+<ul>
+<li>证明：对原矩阵补上一列0，进行高斯消元。显然这个方程组有解——所有未知数都相等.则由高斯消元判断无穷多组解的条件珂得，消出的上三角矩阵中，一定有全零行，且常数项也是0。所以该矩阵的行列式为0.因为高消之后的矩阵的行列式只是原行列式乘上±1（只在交换行的时候行列式发生变号），所以原矩阵的行列式也为0.</li>
+</ul></li>
+<li>对于一个上三角矩阵，它的行列式为对角线上数的乘积。
+<ul>
+<li>证明：要在每行选取一个列不重复的数，且这些数乘积非0，则只能选对角线上的n个数。</li>
+</ul></li>
+</ol>
+<h2 id="求解">求解</h2>
+<p>直接求解要枚举全排列，时间复杂度为<span class="math inline">\(O(n!*n)\)</span>。不可接受。使用高斯消元将其化为上三角矩阵，珂在<span class="math inline">\(O(n^3)\)</span>的时间内求n阶矩阵的行列式。 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">long</span> <span class="keyword">double</span> <span class="title">determinant</span><span class="params">(<span class="keyword">long</span> <span class="keyword">double</span> (*A)[maxn],<span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> s=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>,c=<span class="number">1</span>,j;i&lt;=n;++i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">for</span> (j=c;j&lt;=n &amp;&amp; <span class="built_in">fabs</span>(A[j][i])&lt;eps;++j);</span><br><span class="line">        <span class="keyword">if</span> (j==n+<span class="number">1</span>) <span class="keyword">continue</span>;</span><br><span class="line">        s=-s;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> k=<span class="number">1</span>;k&lt;=n;++k) <span class="built_in">swap</span>(A[c][k],A[j][k]);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=c+<span class="number">1</span>;j&lt;=n;++j)</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">fabs</span>(A[j][i])&gt;eps)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">long</span> <span class="keyword">double</span> t=A[j][i]/A[c][i];</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> k=i;k&lt;=n;++k)</span><br><span class="line">                    A[j][k]-=A[c][k]*t;</span><br><span class="line">            &#125;</span><br><span class="line">        ++c;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">double</span> ans=s;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i)</span><br><span class="line">        ans*=A[i][i];</span><br><span class="line">    <span class="keyword">return</span> ans; <span class="comment">// 这里要取绝对值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="矩阵树定理">矩阵树定理</h1>
+<h2 id="概念-2">概念：</h2>
+<ol type="1">
+<li><strong>度数矩阵</strong>：定义<span class="math inline">\(D\)</span>为图<span class="math inline">\(G=(V,E),(|V|=n,|E|=m)\)</span>的度数矩阵，则<span class="math inline">\(D\)</span>为一个<span class="math inline">\(n\times n\)</span>矩阵，其中<span class="math inline">\(D_{i,i}\)</span>为编号为i的结点的度数.</li>
+<li><strong>邻接矩阵</strong>：就是我们通常所说的邻接矩阵,记为<span class="math inline">\(G\)</span>。</li>
+<li><strong>基尔霍夫矩阵（拉普拉斯矩阵）</strong>：定义基尔霍夫矩阵<span class="math inline">\(K=D-G\)</span>.</li>
+</ol>
+<h2 id="定理">定理：</h2>
+<p>当邻接矩阵不带边权时（若<span class="math inline">\(u,v\)</span>有边，则<span class="math inline">\(G(u,v)=G(v,u)=1\)</span>)，则有<br />
+&gt; <strong>矩阵树定理</strong>：一个无重边、自环的图<span class="math inline">\(G\)</span>的生成树个数，等于它的基尔霍夫矩阵任意一个n-1阶主子式的行列式的绝对值。</p>
+<p>将邻接矩阵加上边权，得到新的邻接矩阵、度数矩阵和基尔霍夫矩阵。即：允许重边（甚至把边数扩展到<span class="math inline">\(\mathbb R\)</span>) 此时： <span class="math display">\[D(i,i)=\sum_{(i,j)\in E} w((i,j))\]</span> <span class="math display">\[G(i,j)=w(i,j)\]</span> <span class="math display">\[K=D-G\]</span> 推广一下，有：<br />
+&gt; <strong>变元矩阵树定理</strong>： &gt; 1. 对生成树T定义求其边权之积的函数<span class="math inline">\(F(T)=\prod_{e\in T}w(e)\)</span> &gt; 2. 对于每一棵生成树，求其<span class="math inline">\(F\)</span>函数值的和得到<span class="math inline">\(H(G)\)</span>:<span class="math inline">\(H(G)=\sum_{T\ is\ a\ spanning\ tree\ of\ G}F(T)\)</span> &gt; 3. 则<span class="math inline">\(H(G)\)</span>等于（带边权的）基尔霍夫矩阵的任意一个n-1阶主子式的行列式的绝对值. &gt; 4. 容易发现，当边权都为1的时候，它就是普通的矩阵树定理.</p>
+<p>对于有向图来说，有： &gt; <strong>有向图的矩阵树定理</strong><br />
+&gt; 定义 &gt; <span class="math display">\[K_{i,j}=−w(i,j)\]</span> &gt; <span class="math display">\[K_{i,i}=∑_{j=1}^n w(i,j)\]</span> &gt; 去掉第i行第i列，则能求出以i为根的<strong>外向树</strong>的数量（边权积）<br />
+&gt; 同样地，定义 &gt; <span class="math display">\[K_{i,j}=−w(i,j)\]</span> &gt; <span class="math display">\[K_{i,i}=∑_{j=1}^n w(j,i)\]</span> &gt; 则能求<strong>内向树</strong>的数量（边权积）</p>
+<p>(原谅我语文学得不好没法简洁地描述上述定理qwq...) ## 证明： ~~我们采用闭眼证明法...嗯！它是对的！^_^..~~<br />
+<del>事实上博主太菜并不会证明..</del>(留坑)</p>
+<h2 id="应用">应用：</h2>
+<p><a target="_blank" rel="noopener" href="https://www.lydsy.com/JudgeOnline/problem.php?id=1002">BZOJ1002</a>： <a href="https://wa-automaton.github.io/2019/03/03/BZOJ1002/">（假的）题解戳这里~</a><br />
+<a target="_blank" rel="noopener" href="https://www.lydsy.com/JudgeOnline/problem.php?id=1016">BZOJ1016</a>：<a href="https://wa-automaton.github.io/2019/03/08/BZOJ1016/">题解戳这里~</a><br />
+<a target="_blank" rel="noopener" href="https://www.lydsy.com/JudgeOnline/problem.php?id=3534">BZOJ3524</a>：<a href="https://wa-automaton.github.io/2019/03/07/BZOJ3534/">题解戳这里~</a></p>
+<h1 id="引用鸣谢">引用&amp;鸣谢</h1>
+<ul>
+<li>高斯消元的模板来自CDQZ ComeIntoPower巨佬</li>
+<li>感谢Memset0巨佬Hack掉我原先的高斯消元。</li>
+<li>矩阵树定理一篇大量来源于<a target="_blank" rel="noopener" href="https://www.cnblogs.com/candy99/p/6420935.html">Candy?</a>的博客和<a target="_blank" rel="noopener" href="https://www.cnblogs.com/reverymoon/p/9512836.html">ReMoon</a>。</li>
+</ul>
+<p><strong>对以上巨佬表示感谢。</strong></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%9F%A9%E9%98%B5%E6%A0%91%E5%AE%9A%E7%90%86/" rel="tag"># 矩阵树定理</a>
+              <a href="/tags/%E6%95%B0%E5%AD%A6/" rel="tag"># 数学</a>
+              <a href="/tags/%E8%AE%A1%E6%95%B0/" rel="tag"># 计数</a>
+              <a href="/tags/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/" rel="tag"># 线性代数</a>
+              <a href="/tags/%E9%AB%98%E6%96%AF%E6%B6%88%E5%85%83/" rel="tag"># 高斯消元</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/03/03/BZOJ1003/" rel="prev" title="BZOJ1003">
+      <i class="fa fa-chevron-left"></i> BZOJ1003
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/03/07/BZOJ3534/" rel="next" title="[BZOJ3534][SDOI2014]重建">
+      [BZOJ3534][SDOI2014]重建 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%AB%98%E6%96%AF%E6%B6%88%E5%85%83"><span class="nav-number">1.</span> <span class="nav-text">高斯消元</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E5%85%A5"><span class="nav-number">1.1.</span> <span class="nav-text">引入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">1.2.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E6%B5%81%E7%A8%8B"><span class="nav-number">1.3.</span> <span class="nav-text">算法流程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A1%8C%E5%88%97%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">行列式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5-1"><span class="nav-number">2.1.</span> <span class="nav-text">概念：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B1%82%E8%A7%A3"><span class="nav-number">2.2.</span> <span class="nav-text">求解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9F%A9%E9%98%B5%E6%A0%91%E5%AE%9A%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">矩阵树定理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5-2"><span class="nav-number">3.1.</span> <span class="nav-text">概念：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E7%90%86"><span class="nav-number">3.2.</span> <span class="nav-text">定理：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8"><span class="nav-number">3.3.</span> <span class="nav-text">应用：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%95%E7%94%A8%E9%B8%A3%E8%B0%A2"><span class="nav-number">4.</span> <span class="nav-text">引用&amp;鸣谢</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="_WA自动机"
+      src="/images/helloworld.jpg">
+  <p class="site-author-name" itemprop="name">_WA自动机</p>
+  <div class="site-description" itemprop="description">人生到处知何似，应似飞鸿踏雪泥</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">_WA自动机</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '51tNgbRxn9e1AYr9AxHOJf1b-gzGzoHsz',
+      appKey     : '8QWxicTVALJ91TRRPtnsYpsl',
+      placeholder: "来都来了，说点什么再走呗~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
