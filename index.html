@@ -577,6 +577,102 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wa-automaton.github.io/2021/06/19/%E5%B7%A6%E5%81%8F%E6%A0%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/helloworld.jpg">
+      <meta itemprop="name" content="_WA自动机">
+      <meta itemprop="description" content="人生到处知何似，应似飞鸿踏雪泥">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="_WA自动机的blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/06/19/%E5%B7%A6%E5%81%8F%E6%A0%91/" class="post-title-link" itemprop="url">左偏树</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-06-19 16:07:31" itemprop="dateCreated datePublished" datetime="2021-06-19T16:07:31+08:00">2021-06-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-06-20 00:52:23" itemprop="dateModified" datetime="2021-06-20T00:52:23+08:00">2021-06-20</time>
+              </span>
+
+          
+            <span id="/2021/06/19/%E5%B7%A6%E5%81%8F%E6%A0%91/" class="post-meta-item leancloud_visitors" data-flag-title="左偏树" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/06/19/%E5%B7%A6%E5%81%8F%E6%A0%91/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/06/19/%E5%B7%A6%E5%81%8F%E6%A0%91/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>左偏树是一种最常用的可并堆。它除了满足堆性质（即根节点是整个子树中key值最小或最大的节点）之外，还有另外一个性质：该树是左偏的。顾名思义，对于每一个节点u，若既有左儿子ls又有右儿子rs，定义其“高度”<span class="math inline">\(\text{dis}(u)\)</span>为到最近的叶子的距离，则<span class="math inline">\(\text{dis}(ls)\geq \text{dis}(rs)\)</span>。直观理解就是左子树更深。</p>
+<p><span class="math inline">\(\textbf{Theorem 1.0}\)</span>：对于节点个数为<span class="math inline">\(n\)</span>的左偏树，其高度为<span class="math inline">\(\Theta(\lg n)\)</span>。</p>
+<ul>
+<li><span class="math inline">\(\textbf{Proof}\)</span>：对于一棵<span class="math inline">\(\text{dis}(u)=\text{h}\)</span>的左偏树，节点最少时一定是满二叉树。即，对于左偏树，有：<span class="math inline">\(h \leq \log_2(n+1)\)</span></li>
+</ul>
+<p>要实现左偏树，节点要记录以下信息：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> val,rt,ls,rs,dis;</span><br><span class="line">&#125;S[N];</span><br></pre></td></tr></table></figure>
+<p>左偏树最重要的操作（其实就是唯一的操作）是merge.下面实现函数<span class="math inline">\(\text{merge}(u,v)\)</span>，功能为把u和v两棵左偏树（以下不区分节点和节点所代表的子树）合并，返回新树的根。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">Merge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!x || !y) <span class="keyword">return</span> x+y;</span><br><span class="line">    <span class="keyword">if</span> (S[x].val&gt;S[y].val || (S[x].val==S[y].val &amp;&amp; x&gt;y)) <span class="built_in">swap</span>(x,y); <span class="comment">//保证x是最小的那个节点。</span></span><br><span class="line">    S[x].rs=<span class="built_in">Merge</span>(S[x].rs,y); <span class="comment">//新树的根应为x。</span></span><br><span class="line">    <span class="keyword">if</span> (S[S[x].ls].dis&lt;S[S[x].rs].dis) <span class="built_in">swap</span>(S[x].ls,S[x].rs); <span class="comment">//若右子树更深，交换左右子树，保持左偏性质</span></span><br><span class="line">    S[S[x].ls].rt=S[S[x].rs].rt=x;</span><br><span class="line">    S[x].dis=S[S[x].rs].dis+<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>弹出堆顶元素时，记得要给堆顶节点的根重新赋值。因为如果不赋值的话，访问这个被删除元素并判断和其他节点连通性的时候会出现问题。<span class="math inline">\(\text{rt}(u)\neq \text{rt}(v)\)</span>，判断错误。</p>
+<p>完整代码如下（洛谷模板题） <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cassert&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N=<span class="number">1e5</span>+<span class="number">1000</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> val,rt,ls,rs,dis;</span><br><span class="line">&#125;S[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">swap</span><span class="params">(<span class="keyword">int</span> &amp;x,<span class="keyword">int</span> &amp;y)</span></span>&#123;x^=y^=x^=y;&#125;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;<span class="keyword">return</span> x==S[x].rt?x:S[x].rt=<span class="built_in">find</span>(S[x].rt);&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">Merge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!x || !y) <span class="keyword">return</span> x+y;</span><br><span class="line">    <span class="keyword">if</span> (S[x].val&gt;S[y].val || (S[x].val==S[y].val &amp;&amp; x&gt;y)) <span class="built_in">swap</span>(x,y);</span><br><span class="line">    S[x].rs=<span class="built_in">Merge</span>(S[x].rs,y);</span><br><span class="line">    <span class="keyword">if</span> (S[S[x].ls].dis&lt;S[S[x].rs].dis) <span class="built_in">swap</span>(S[x].ls,S[x].rs);</span><br><span class="line">    S[S[x].ls].rt=S[S[x].rs].rt=x;</span><br><span class="line">    S[x].dis=S[S[x].rs].dis+<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">merge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (S[x].val==<span class="number">-1</span> || S[y].val==<span class="number">-1</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">int</span> u=<span class="built_in">find</span>(x),v=<span class="built_in">find</span>(y);</span><br><span class="line">    <span class="keyword">if</span> (u^v) S[u].rt=S[v].rt=<span class="built_in">Merge</span>(u,v);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">poprt</span><span class="params">(<span class="keyword">int</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (S[x].val==<span class="number">-1</span>) <span class="keyword">return</span> <span class="built_in"><span class="keyword">void</span></span>(<span class="built_in">puts</span>(<span class="string">&quot;-1&quot;</span>));</span><br><span class="line">    x=<span class="built_in">find</span>(x);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>,S[x].val);</span><br><span class="line">    S[x].val=<span class="number">-1</span>;S[S[x].ls].rt=S[x].ls;S[S[x].rs].rt=S[x].rs;S[x].rt=<span class="built_in">Merge</span>(S[x].ls,S[x].rs);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n,m;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>,&amp;n,&amp;m);S[<span class="number">0</span>].dis=<span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">for</span>  (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i) <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;S[i].val),S[i].rt=i;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=m;++i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> opt,x,y;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;opt);</span><br><span class="line">        <span class="keyword">if</span> (opt&amp;<span class="number">1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>,&amp;x,&amp;y);</span><br><span class="line">            <span class="built_in">merge</span>(x,y);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;x);</span><br><span class="line">            <span class="built_in">poprt</span>(x);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// assert(0);</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://wa-automaton.github.io/2019/07/07/9102%E6%9A%91%E5%81%87%E6%B5%B7%E4%BA%AE%E9%9B%86%E8%AE%AD%E6%B8%B8%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1065,99 +1161,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://wa-automaton.github.io/2019/04/28/luogu-P3994-%E9%AB%98%E9%80%9F%E5%85%AC%E8%B7%AF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/helloworld.jpg">
-      <meta itemprop="name" content="_WA自动机">
-      <meta itemprop="description" content="人生到处知何似，应似飞鸿踏雪泥">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="_WA自动机的blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/04/28/luogu-P3994-%E9%AB%98%E9%80%9F%E5%85%AC%E8%B7%AF/" class="post-title-link" itemprop="url">[luogu P3994]高速公路</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-04-28 22:59:19" itemprop="dateCreated datePublished" datetime="2019-04-28T22:59:19+08:00">2019-04-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-06-13 21:43:30" itemprop="dateModified" datetime="2021-06-13T21:43:30+08:00">2021-06-13</time>
-              </span>
-
-          
-            <span id="/2019/04/28/luogu-P3994-%E9%AB%98%E9%80%9F%E5%85%AC%E8%B7%AF/" class="post-meta-item leancloud_visitors" data-flag-title="[luogu P3994]高速公路" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2019/04/28/luogu-P3994-%E9%AB%98%E9%80%9F%E5%85%AC%E8%B7%AF/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2019/04/28/luogu-P3994-%E9%AB%98%E9%80%9F%E5%85%AC%E8%B7%AF/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>斜率优化dp</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/04/28/luogu-P3994-%E9%AB%98%E9%80%9F%E5%85%AC%E8%B7%AF/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1229,7 +1232,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-count">30</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
