@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wa-automaton.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="B 题意 n次询问，每次给定l,r，求[l,r]内至少删掉多少数，使得剩下的数按位与不为0。 出题人加强版：\(n \leq 2*10^5\),\(l,r \leq 10^9\) 解法 原题数据范围是\(l,r\leq 2*10^5\).先考虑这个怎么做： 按位与不为0，就是存在某一位，满足这个集合所有的数这一位都是1.考虑枚举某一位，前缀和统计个数，即可在对数时间内完成。 加强版不能这么">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CGR18题解">
+<meta property="og:url" content="https://wa-automaton.github.io/2022/01/01/CGR18%E9%A2%98%E8%A7%A3/index.html">
+<meta property="og:site_name" content="_WA自动机的blog">
+<meta property="og:description" content="B 题意 n次询问，每次给定l,r，求[l,r]内至少删掉多少数，使得剩下的数按位与不为0。 出题人加强版：\(n \leq 2*10^5\),\(l,r \leq 10^9\) 解法 原题数据范围是\(l,r\leq 2*10^5\).先考虑这个怎么做： 按位与不为0，就是存在某一位，满足这个集合所有的数这一位都是1.考虑枚举某一位，前缀和统计个数，即可在对数时间内完成。 加强版不能这么">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-01-01T10:57:36.000Z">
+<meta property="article:modified_time" content="2022-01-02T12:46:52.777Z">
+<meta property="article:author" content="_WA自动机">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://wa-automaton.github.io/2022/01/01/CGR18%E9%A2%98%E8%A7%A3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>CGR18题解 | _WA自动机的blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">_WA自动机的blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">过期高中生。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-links">
+
+    <a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>links</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wa-automaton.github.io/2022/01/01/CGR18%E9%A2%98%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/helloworld.jpg">
+      <meta itemprop="name" content="_WA自动机">
+      <meta itemprop="description" content="人生到处知何似，应似飞鸿踏雪泥">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="_WA自动机的blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CGR18题解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-01-01 18:57:36" itemprop="dateCreated datePublished" datetime="2022-01-01T18:57:36+08:00">2022-01-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-01-02 20:46:52" itemprop="dateModified" datetime="2022-01-02T20:46:52+08:00">2022-01-02</time>
+              </span>
+
+          
+            <span id="/2022/01/01/CGR18%E9%A2%98%E8%A7%A3/" class="post-meta-item leancloud_visitors" data-flag-title="CGR18题解" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2022/01/01/CGR18%E9%A2%98%E8%A7%A3/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/01/01/CGR18%E9%A2%98%E8%A7%A3/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="b">B</h1>
+<h2 id="题意">题意</h2>
+<p>n次询问，每次给定l,r，求[l,r]内至少删掉多少数，使得剩下的数按位与不为0。 出题人加强版：<span class="math inline">\(n \leq 2*10^5\)</span>,<span class="math inline">\(l,r \leq 10^9\)</span></p>
+<h2 id="解法">解法</h2>
+<p>原题数据范围是<span class="math inline">\(l,r\leq 2*10^5\)</span>.先考虑这个怎么做： 按位与不为0，就是存在某一位，满足这个集合所有的数这一位都是1.考虑枚举某一位，前缀和统计个数，即可在对数时间内完成。 加强版不能这么求前缀和了，这迫使我们寻找简便的求某一位为1的个数的算法。考虑二进制加1的过程，我们用以下解法替代前缀和：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="keyword">long</span> <span class="title">getcount</span><span class="params">(<span class="keyword">long</span> <span class="keyword">long</span> n, <span class="keyword">int</span> k)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">long</span> res = (n &gt;&gt; (k + <span class="number">1</span>)) &lt;&lt; k;</span><br><span class="line">    <span class="keyword">if</span> ((n &gt;&gt; k) &amp; <span class="number">1</span>)</span><br><span class="line">        res += n &amp; ((<span class="number">1ll</span> &lt;&lt; k) - <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="代码">代码</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> std::max;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N=<span class="number">2e5</span>+<span class="number">100</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> int64;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getcount</span><span class="params">(<span class="keyword">int</span> n,<span class="keyword">int</span> k)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> res=(n&gt;&gt;(k+<span class="number">1</span>))&lt;&lt;k;</span><br><span class="line">    <span class="keyword">if</span> ((n&gt;&gt;k)&amp;<span class="number">1</span>)</span><br><span class="line">        res+=(n&amp;((<span class="number">1</span>&lt;&lt;k)<span class="number">-1</span>));</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> T;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;T);</span><br><span class="line">    <span class="keyword">while</span> (T--)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> l,r;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>,&amp;l,&amp;r);</span><br><span class="line">        <span class="keyword">int</span> ans=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">30</span>;~i;--i)</span><br><span class="line">            ans=<span class="built_in">max</span>(ans,<span class="built_in">getcount</span>(r+<span class="number">1</span>,i)-<span class="built_in">getcount</span>(l,i));</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>,r-l+<span class="number">1</span>-ans);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="c">C</h1>
+<h2 id="题意-1">题意</h2>
+<p>你有两个长度为n的01串A和B.每次操作可以选择一个当前为1的点，将除了它以外的所有点的数值取反。求至少多少次操作之后，可以把A变成B.<span class="math inline">\(n\le 10^5\)</span></p>
+<h2 id="解法-1">解法</h2>
+<p>单次变换好像看不出来什么，但是简单模拟可以发现，两次变换相当于交换了一对0和1.所以对于总操作次数为偶数的方案，答案可以直接算出来。奇数次操作相当于先进行了一次操作，再进行偶数次操作。枚举第一次操作的两种情况：（选定的1在B中对应的是1还是0），算出来变换之后01和10各有多少种，就可以O(1)得到答案。</p>
+<h2 id="代码-1">代码</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> std::min;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N=<span class="number">1e5</span>+<span class="number">199</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> oo=<span class="number">0x3f3f3f3f</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">char</span> a[N],b[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> T;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;T);</span><br><span class="line">    <span class="keyword">while</span> (T--)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> n;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;n);</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%s%s&quot;</span>,a+<span class="number">1</span>,b+<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">int</span> x=<span class="number">0</span>,y=<span class="number">0</span>,z=<span class="number">0</span>,w=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (a[i]==<span class="string">&#x27;0&#x27;</span> &amp;&amp; b[i]==<span class="string">&#x27;0&#x27;</span>) ++x;</span><br><span class="line">            <span class="keyword">if</span> (a[i]==<span class="string">&#x27;0&#x27;</span> &amp;&amp; b[i]==<span class="string">&#x27;1&#x27;</span>) ++y;</span><br><span class="line">            <span class="keyword">if</span> (a[i]==<span class="string">&#x27;1&#x27;</span> &amp;&amp; b[i]==<span class="string">&#x27;0&#x27;</span>) ++z;</span><br><span class="line">            <span class="keyword">if</span> (a[i]==<span class="string">&#x27;1&#x27;</span> &amp;&amp; b[i]==<span class="string">&#x27;1&#x27;</span>) ++w;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// printf(&quot;DEBUG %d %d %d %d\n&quot;,x,y,z,w);</span></span><br><span class="line">        <span class="keyword">int</span> ans=oo;</span><br><span class="line">        <span class="keyword">if</span> (y==z) ans=y*<span class="number">2</span>;</span><br><span class="line">        <span class="comment">// 如果第一次操作是10</span></span><br><span class="line">        <span class="keyword">if</span> (z &amp;&amp; w==x+<span class="number">1</span>) ans=<span class="built_in">min</span>(ans,<span class="number">2</span>*w+<span class="number">1</span>);<span class="comment">// +1是第一次操作</span></span><br><span class="line">        <span class="comment">// 如果第一次操作是11</span></span><br><span class="line">        <span class="keyword">if</span> (w &amp;&amp; w<span class="number">-1</span>==x) ans=<span class="built_in">min</span>(ans,<span class="number">2</span>*x+<span class="number">1</span>);<span class="comment">// +1是第一次操作</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>,ans==oo?<span class="number">-1</span>:ans);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="d">D</h1>
+<h2 id="题意-2">题意</h2>
+<p>给定一棵树，有些边的边权已知，有些边未知。现在有一些限制条件，每个条件形如“从u点到v点，边权的异或和的popcount是奇数还是偶数”。要求给出一种可行的给未知边赋值的方案，满足所有条件；或者指出方案不存在。</p>
+<h2 id="题解">题解</h2>
+<p>考虑以下性质： <span class="math display">\[\mathrm{popcount}(x\oplus y)\mod 2=\mathrm{popcount}(x) \mod 2 \oplus \mathrm{popcount}(y) \mod 2\]</span> 这个性质指出，对于每一条边，都可以按照popcount的奇偶性变成01边。如果对于每个点维护它到根01路径上的异或和，记为s。那么每个限制就变成了<span class="math inline">\(s(x) \oplus s(y)=0/1\)</span>。我们用一种类似二分图染色的方法，对于每个连通块，尝试构造可行的方案。染色完成之后，一条边的权值就是<span class="math inline">\(s(x)\oplus s(\mathrm{fa}[x])\)</span>。</p>
+<h2 id="代码-2">代码</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> std::map;</span><br><span class="line"><span class="keyword">using</span> std::vector;</span><br><span class="line"><span class="keyword">using</span> std::pair;</span><br><span class="line"><span class="keyword">using</span> std::minmax;</span><br><span class="line"><span class="keyword">using</span> std::make_pair;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N=<span class="number">4e5</span>+<span class="number">1000</span>;</span><br><span class="line"></span><br><span class="line">vector&lt;<span class="keyword">int</span>&gt; G[N];</span><br><span class="line"><span class="keyword">int</span> fa[N];</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Path</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> x,y,v;</span><br><span class="line">&#125;P[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> u,<span class="keyword">int</span> ff)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    fa[u]=ff;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> v:G[u])</span><br><span class="line">        <span class="keyword">if</span> (v!=ff) <span class="built_in">dfs</span>(v,u);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> head[N],cnt;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Edge</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> to,next,w;</span><br><span class="line">&#125;edge[N&lt;&lt;<span class="number">1</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> _add(<span class="keyword">int</span> u,<span class="keyword">int</span> v,<span class="keyword">int</span> w)</span><br><span class="line">&#123;</span><br><span class="line">    edge[++cnt].next=head[u];</span><br><span class="line">    edge[cnt].to=v;</span><br><span class="line">    edge[cnt].w=w;</span><br><span class="line">    head[u]=cnt;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> u,<span class="keyword">int</span> v,<span class="keyword">int</span> w)</span></span>&#123;_add(u,v,w);_add(v,u,w);&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> col[N],f[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> u)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">bool</span> ans=<span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=head[u];i;i=edge[i].next)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> v=edge[i].to;</span><br><span class="line">        <span class="keyword">if</span> (col[v]!=<span class="number">-1</span> &amp;&amp; col[v]!=(col[u]^edge[i].w)) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">if</span> (col[v]==<span class="number">-1</span>)</span><br><span class="line">            col[v]=col[u]^edge[i].w,ans|=<span class="built_in">dfs</span>(v);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> T;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;T);</span><br><span class="line">    <span class="keyword">while</span> (T--)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> n,m;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>,&amp;n,&amp;m);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i) G[i].<span class="built_in">clear</span>();</span><br><span class="line">        cnt=<span class="number">0</span>;</span><br><span class="line">        <span class="built_in">memset</span>(head,<span class="number">0</span>,<span class="built_in"><span class="keyword">sizeof</span></span>(<span class="keyword">int</span>)*(n+<span class="number">1</span>));</span><br><span class="line">        <span class="keyword">int</span> tot=<span class="number">0</span>;</span><br><span class="line">        map&lt;pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt;,<span class="keyword">int</span>&gt; mp;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;n;++i)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">int</span> x,y,v;</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">&quot;%d%d%d&quot;</span>,&amp;x,&amp;y,&amp;v);</span><br><span class="line">            G[x].<span class="built_in">push_back</span>(y);</span><br><span class="line">            G[y].<span class="built_in">push_back</span>(x);</span><br><span class="line">            <span class="keyword">if</span> (~v)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">int</span> w=__builtin_popcount(v)%<span class="number">2</span>;</span><br><span class="line">                P[++tot]=Path&#123;x,y,w&#125;;</span><br><span class="line">                mp[<span class="built_in">minmax</span>(x,y)]=v;</span><br><span class="line">            &#125; </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=m;++i)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">int</span> a,b,p;</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">&quot;%d%d%d&quot;</span>,&amp;a,&amp;b,&amp;p);</span><br><span class="line">            P[++tot]=Path&#123;a,b,p&#125;;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">dfs</span>(<span class="number">1</span>,<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=tot;++i)</span><br><span class="line">            <span class="built_in">add</span>(P[i].x,P[i].y,P[i].v);</span><br><span class="line">        <span class="built_in">memset</span>(col,<span class="number">-1</span>,<span class="built_in"><span class="keyword">sizeof</span></span>(<span class="keyword">int</span>)*(n+<span class="number">1</span>));</span><br><span class="line">        <span class="keyword">bool</span> ans=<span class="number">0</span>;</span><br><span class="line">        <span class="comment">// for (int i=1;i&lt;=n;++i)</span></span><br><span class="line">        <span class="comment">//     for (int j=head[i];j;j=edge[j].next)</span></span><br><span class="line">        <span class="comment">//     printf(&quot;%d %d %d\n&quot;,i,edge[j].to,edge[j].w);</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;=n;++i)</span><br><span class="line">            <span class="keyword">if</span> (col[i]==<span class="number">-1</span>) col[i]=<span class="number">1</span>,ans|=<span class="built_in">dfs</span>(i);</span><br><span class="line">        <span class="keyword">if</span> (ans==<span class="number">1</span>) &#123;<span class="built_in">puts</span>(<span class="string">&quot;NO&quot;</span>);<span class="keyword">continue</span>;&#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="built_in">puts</span>(<span class="string">&quot;YES&quot;</span>);</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">2</span>;i&lt;=n;++i)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">if</span> (mp.<span class="built_in">count</span>(<span class="built_in">minmax</span>(i,fa[i])))</span><br><span class="line">                    <span class="built_in">printf</span>(<span class="string">&quot;%d %d %d\n&quot;</span>,i,fa[i],mp[<span class="built_in">minmax</span>(i,fa[i])]);</span><br><span class="line">                <span class="keyword">else</span> <span class="built_in">printf</span>(<span class="string">&quot;%d %d %d\n&quot;</span>,i,fa[i],col[i]^col[fa[i]]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/12/17/CF1617%E9%A2%98%E8%A7%A3/" rel="prev" title="CF1617题解">
+      <i class="fa fa-chevron-left"></i> CF1617题解
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/01/21/%E8%92%9F%E8%92%BB_WA%E8%87%AA%E5%8A%A8%E6%9C%BA%E7%9A%84%E6%A8%A1%E6%9D%BF%E5%BA%93/" rel="next" title="蒟蒻_WA自动机的模板库">
+      蒟蒻_WA自动机的模板库 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#b"><span class="nav-number">1.</span> <span class="nav-text">B</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E6%84%8F"><span class="nav-number">1.1.</span> <span class="nav-text">题意</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">解法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">1.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#c"><span class="nav-number">2.</span> <span class="nav-text">C</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E6%84%8F-1"><span class="nav-number">2.1.</span> <span class="nav-text">题意</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%B3%95-1"><span class="nav-number">2.2.</span> <span class="nav-text">解法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-1"><span class="nav-number">2.3.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#d"><span class="nav-number">3.</span> <span class="nav-text">D</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E6%84%8F-2"><span class="nav-number">3.1.</span> <span class="nav-text">题意</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3"><span class="nav-number">3.2.</span> <span class="nav-text">题解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-2"><span class="nav-number">3.3.</span> <span class="nav-text">代码</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="_WA自动机"
+      src="/images/helloworld.jpg">
+  <p class="site-author-name" itemprop="name">_WA自动机</p>
+  <div class="site-description" itemprop="description">人生到处知何似，应似飞鸿踏雪泥</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">_WA自动机</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '51tNgbRxn9e1AYr9AxHOJf1b-gzGzoHsz',
+      appKey     : '8QWxicTVALJ91TRRPtnsYpsl',
+      placeholder: "来都来了，说点什么再走呗~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
